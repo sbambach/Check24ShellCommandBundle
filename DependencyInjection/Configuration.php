@@ -12,7 +12,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-    protected $name = 'PipeBuilder';
+    protected $name = 'shell_command';
 
     /**
      * {@inheritdoc}
@@ -24,18 +24,24 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->arrayNode('Commands')
+                ->arrayNode('commands')
+                    ->useAttributeAsKey('key')
+                    ->canBeUnset()
                     ->prototype('array')
                         ->children()
                             ->scalarNode('name')->end()
                             ->arrayNode('args')
-                                ->prototype('array')
-                                    ->children()
-                                        ->scalarNode('url')->end()
+                                ->children()
+                                    ->scalarNode('url')->end()
+                                ->end()
+                            ->end()
                             ->arrayNode('options')
-                                ->prototype('array')
-                                    ->children()
-
+                                ->prototype('variable')->end()
+                                ->defaultValue([])
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 
