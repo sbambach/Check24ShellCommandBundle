@@ -1,0 +1,3 @@
+shell_command_homepage:
+    path:     /
+    defaults: { _controller: ShellCommandBundle:Default:index }
