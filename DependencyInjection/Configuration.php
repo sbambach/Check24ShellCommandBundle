@@ -4,6 +4,7 @@ namespace Shopping\ShellCommandBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Workflow\Definition;
 
 /**
  * This is the class that validates and merges configuration from your app/config files.
@@ -30,6 +31,12 @@ class Configuration implements ConfigurationInterface
                     ->prototype('array')
                         ->children()
                             ->scalarNode('name')->end()
+                            ->arrayNode('output')
+                                ->children()
+                                    ->scalarNode('type')->end()
+                                    ->scalarNode('path')->end()
+                                ->end()
+                            ->end()
                             ->arrayNode('args')
                                 ->children()
                                     ->scalarNode('url')->end()
@@ -40,6 +47,13 @@ class Configuration implements ConfigurationInterface
                                 ->defaultValue([])
                             ->end()
                         ->end()
+                    ->end()
+                ->end()
+                ->arrayNode('pipes')
+                    ->useAttributeAsKey('key')
+                    ->canBeUnset()
+                    ->prototype('variable')->end()
+                    ->defaultValue([])
                     ->end()
                 ->end()
             ->end()

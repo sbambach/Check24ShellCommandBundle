@@ -1,0 +1,4 @@
+shell_command:
+    commands:
+        tee:
+            name: 'tee'

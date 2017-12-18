@@ -2,11 +2,14 @@
 
 namespace Shopping\ShellCommandBundle\DependencyInjection;
 
-use Shell\Commands\Command;
+use Shopping\ShellCommandBundle\Utils\Command\ParameterCommand;
+use Shopping\ShellCommandBundle\Utils\Pipe\Pipe;
+use Shopping\ShellCommandBundle\Utils\Pipe\PipeFactory;
+use Shopping\ShellCommandBundle\Utils\ProcessManager;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
@@ -48,6 +51,8 @@ class ShellCommandExtension extends Extension
      */
     protected function updateContainerParameters(ContainerBuilder $container, array $config)
     {
+        $commandDefinitions = [];
+
         foreach ($config['commands'] as $commandName => $command) {
             $options = [];
             foreach ($command['options'] as $option) {
@@ -59,11 +64,33 @@ class ShellCommandExtension extends Extension
             }
 
             $commandDefinition = new Definition(
-                Command::class,
+                ParameterCommand::class,
                 [$command['name'], $command['args'] ?? [], $options ?? []]
             );
 
             $container->setDefinition(sprintf('shell_command.commands.%s', $commandName), $commandDefinition);
+            $commandDefinitions[$commandName] = $commandDefinition;
+        }
+
+        $processManagerDefinition = new Definition(ProcessManager::class);
+        $processManagerDefinition->addArgument(new Reference('logger'));
+
+        foreach ($config['pipes'] as $pipeName => $commands) {
+            $neededCommands = [];
+            foreach ($commands as $id => $commandNames) {
+                foreach ($commandNames as $commandName) {
+                    $commandName = str_replace('-', '_', $commandName);
+                    $neededCommands[$id][] = $commandDefinitions[$commandName];
+                }
+            }
+
+            $pipeDefinition = new Definition(
+                Pipe::class,
+                [$pipeName, $neededCommands, $processManagerDefinition, new Reference('logger')]
+            );
+
+            $pipeDefinition->setFactory([PipeFactory::class, 'createPipe']);
+            $container->setDefinition(sprintf('shell_command.pipes.%s', $pipeName), $pipeDefinition);
         }
     }
 }
