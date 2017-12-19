@@ -15,20 +15,6 @@ class ParameterCommand extends Command implements ParameterInterface
 {
     use ParameterTrait;
 
-    public function appendArg(string $arg)
-    {
-        array_push($this->args, $arg);
-
-        return $this;
-    }
-
-    public function prependArg(string $arg)
-    {
-        array_unshift($this->args, $arg);
-
-        return $this;
-    }
-
     public function serialize()
     {
         $serializedCommand = parent::serialize();

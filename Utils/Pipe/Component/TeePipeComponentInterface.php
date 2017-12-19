@@ -11,4 +11,5 @@ use Shell\Process;
 interface TeePipeComponentInterface extends LinearPipeComponentInterface
 {
     public function addFileProcess(Process $process): PipeComponentInterface;
+    public function getFileProcesses(): array;
 }

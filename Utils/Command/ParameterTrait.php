@@ -17,7 +17,7 @@ trait ParameterTrait
         $this->parametersToParse[$key] = $value;
     }
 
-    public function setParamteters(array $parameters)
+    public function setParameters(array $parameters)
     {
         $this->parametersToParse = $parameters;
         return $this;

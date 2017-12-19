@@ -11,10 +11,15 @@ class File extends Stream
     public function openResourceHandle()
     {
         if (empty($this->resource)) {
-            $this->resource = mt_rand(1, 9);
+            $this->resource = sys_get_temp_dir() . '/' . mt_rand(10000000, 99999999);
             posix_mkfifo($this->resource, 0777);
         }
 
-        return fopen($this->resource, $this->accessType);
+        return ['file', $this->resource, $this->accessType];
+    }
+
+    public function getFileName()
+    {
+        return $this->resource;
     }
 }

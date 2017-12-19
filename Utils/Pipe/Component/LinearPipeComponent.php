@@ -4,25 +4,20 @@ namespace Shopping\ShellCommandBundle\Utils\Pipe\Component;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Shell\Commands\Command;
-use Shell\Output\OutputHandler;
 use Shell\Process;
+use Shopping\ShellCommandBundle\Utils\Exception\ShellCommandRuntimeError;
 use Shopping\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
-use Shopping\ShellCommandBundle\Utils\Pipe\Resource\Stream;
 
 /**
  * @author    Silvester Denk <silvester.denk@check24.de>
  * @copyright 2017 CHECK24 Vergleichsportal Shopping GmbH <http://www.check24.de/>
  */
-class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterface
+class LinearPipeComponent implements LinearPipeComponentInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
     /** @var Process */
-    protected $streamProcess;
-
-    /** @var string  */
-    protected $exception;
+    protected $command;
 
     /** @var  ResourceInterface */
     protected $output;
@@ -34,13 +29,13 @@ class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterfac
     {
         $this->logger->debug('Running command : {command}', ['command' => $this->streamProcess->getCommand()->serialize()]);
 
-        $process = $this->runProcessAsync(
+        $this->runProcessAsync(
             $this->getStreamProcess(),
             $this->input->openResourceHandle(),
             $this->output->openResourceHandle()
         );
 
-        $this->output->setResource($process->getStdout());
+        $this->output->setResource($this->getStreamProcess()->getStdout());
 
         return $this;
     }
@@ -78,25 +73,9 @@ class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterfac
         return $this->input;
     }
 
-    /**
-     * @param array $command
-     *
-     * @return LinearPipeComponent
-     */
     public function setCommand(array $command): LinearPipeComponent
     {
         $this->command = $command;
-        return $this;
-    }
-
-    /**
-     * @param string $exception
-     *
-     * @return LinearPipeComponent
-     */
-    public function setException(string $exception): LinearPipeComponent
-    {
-        $this->exception = $exception;
         return $this;
     }
 
@@ -107,7 +86,7 @@ class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterfac
             ->setStdout($output)
             ->onError(
                 function (Process $process) {
-                    throw new $this->exception(sprintf('Error: %s', $process->getOutputHandler()->readStdErr()));
+                    throw new ShellCommandRuntimeError(sprintf('Error: %s', $process->getOutputHandler()->readStdErr()));
                 }
             )
             ->runAsync(Process::BLOCKING)

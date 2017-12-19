@@ -2,3 +2,5 @@ shell_command:
     commands:
         tee:
             name: 'tee'
+            args:
+                filePath: '${filePath}'

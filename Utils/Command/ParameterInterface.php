@@ -11,6 +11,6 @@ namespace Shopping\ShellCommandBundle\Utils\Command;
 interface ParameterInterface
 {
     public function addParameter(string $key, string $value);
-    public function setParamteters(array $parameters);
+    public function setParameters(array $parameters);
     public function getParameters(): array;
 }
