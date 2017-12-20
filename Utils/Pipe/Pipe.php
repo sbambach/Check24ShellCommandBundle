@@ -24,9 +24,6 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
     use ContainerAwareTrait;
     use LoggerAwareTrait;
 
-    /** @var  string */
-    protected $name;
-
     /** @var  PipeComponentInterface[] */
     protected $components;
 
@@ -38,27 +35,28 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
 
     public function exec(): array
     {
-        foreach ($this->components as $components) {
-            /** @var LinearPipeComponentInterface $linearComponent */
-            $linearComponent = array_shift($components);
-            $this->pipeConnector->extendPipe($linearComponent);
-
-            if (count($components) > 0) {
-                /** @var TeePipeComponentInterface $teeComponent */
-                $teeComponent = array_shift($components);
-                $this->pipeConnector->extendPipe($teeComponent);
-            }
-        }
+        $this->buildPipe();
 
         $this->execComponents();
 
         return $this->processManager->waitAllProcesses();
     }
 
-    public function setName(string $name): Pipe
+    protected function buildPipe(): void
     {
-        $this->name = $name;
-        return $this;
+        foreach ($this->components as $components) {
+            foreach ($components as $component) {
+                $this->pipeConnector->extendPipe($component);
+            }
+        }
+    }
+
+    protected function execComponents(): void
+    {
+        foreach ($this->pipeConnector->getConnectedPipeComponents() as $component) {
+            $component->passParameters($this->getParameters());
+            $component->exec();
+        }
     }
 
     public function setComponents(array $components): Pipe
@@ -82,13 +80,5 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
     {
         $this->pipeConnector = $pipeConnector;
         return $this;
-    }
-
-    protected function execComponents(): void
-    {
-        foreach ($this->pipeConnector->getConnectedPipeComponents() as $component) {
-            $component->passParameters($this->getParameters());
-            $component->exec();
-        }
     }
 }

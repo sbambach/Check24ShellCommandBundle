@@ -36,6 +36,4 @@ class ParameterCommand extends Command implements ParameterInterface
         $this->name = $name;
         return $this;
     }
-
-
 }

@@ -191,7 +191,6 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
             $pipeDefinition = new Definition(
                 Pipe::class,
                 [
-                    $pipeName,
                     $pipeComponents,
                     $processManagerDefinition,
                     $loggerReference,

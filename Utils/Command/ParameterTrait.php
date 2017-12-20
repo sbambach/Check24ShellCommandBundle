@@ -28,12 +28,7 @@ trait ParameterTrait
         return $this->parametersToParse;
     }
 
-    /**
-     * @param $subject
-     *
-     * @return mixed
-     */
-    protected function replaceParams($subject)
+    protected function replaceParams(string $subject): string
     {
         return preg_replace_callback(
             '/\$\{(.*)\}/',

@@ -21,21 +21,16 @@ class PipeConnector
         $lastComponent = end($this->connectedPipeComponents);
 
         if (empty($lastComponent)) {
-            $pipeComponent->setInput($this->createResource(Stream::class));
+            $pipeComponent->setInput(new Stream());
         } else {
             $pipeComponent->setInput($lastComponent->getOutput());
         }
 
         if (empty($pipeComponent->getOutput())) {
-            $pipeComponent->setOutput($this->createResource(Stream::class, ResourceInterface::ACCESS_TYPE_WRITE));
+            $pipeComponent->setOutput((new Stream())->setAccessType(ResourceInterface::ACCESS_TYPE_WRITE));
         }
 
         $this->connectedPipeComponents[] = $pipeComponent;
-    }
-
-    protected function createResource(string $class, string $accessType = ResourceInterface::ACCESS_TYPE_READ): ResourceInterface
-    {
-        return (new $class())->setAccessType($accessType);
     }
 
     /**

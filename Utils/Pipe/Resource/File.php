@@ -4,6 +4,7 @@ namespace Shopping\ShellCommandBundle\Utils\Pipe\Resource;
 
 use Shopping\ShellCommandBundle\Utils\Command\ParameterInterface;
 use Shopping\ShellCommandBundle\Utils\Command\ParameterTrait;
+use Shopping\ShellCommandBundle\Utils\Exception\IOException;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>
@@ -17,11 +18,13 @@ class File extends Stream implements FileInterface, ParameterInterface
     public function openResourceHandle()
     {
         if (empty($this->resource)) {
-            $this->resource = sys_get_temp_dir() . '/' . mt_rand(10000000, 99999999);
-            posix_mkfifo($this->resource, 0777);
+            $this->resource = sys_get_temp_dir() . '/' . uniqid('pipe_', true) . '.fifo';
+            if (!posix_mkfifo($this->resource, 0777)) {
+                throw new IOException();
+            }
         }
 
-        if(!empty($this->parametersToParse)) {
+        if (!empty($this->parametersToParse)) {
             $this->resource = $this->replaceParams($this->resource);
         }
 
@@ -29,7 +32,7 @@ class File extends Stream implements FileInterface, ParameterInterface
             touch($this->resource);
         }
 
-        return ['file', $this->resource, $this->accessType];
+        return [static::DESC_SPEC_FILE, $this->resource, $this->accessType];
     }
 
     public function getFilename(): string

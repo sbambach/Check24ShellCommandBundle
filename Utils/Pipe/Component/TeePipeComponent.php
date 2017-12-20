@@ -16,21 +16,25 @@ use Shopping\ShellCommandBundle\Utils\Pipe\Resource\Stream;
 class TeePipeComponent extends LinearPipeComponent implements TeePipeComponentInterface
 {
     /**
-     * @var Process[]
+     * @var array
      */
     protected $fileProcesses;
 
     public function exec(): PipeComponentInterface
     {
-        $inputs = [];
+        $filePath = [];
+        $inputs   = [];
         foreach ($this->fileProcesses as $fileProcess) {
-            $name = $fileProcess['process']->getCommand()->getName();
+            $name  = $fileProcess['process']->getCommand()->getName();
+            $input = &$inputs[$name];
+            $input = new File();
+            $input->openResourceHandle();
 
-            $inputs[$name] = new File();
-            $inputs[$name]->openResourceHandle();
+            $filePath[] = $input->getFilename();
         }
+        unset($input);
 
-        $this->getStreamProcess()->getCommand()->setParameters(['filePath' => reset($inputs)->getFilename()]);
+        $this->getStreamProcess()->getCommand()->addParameter('filePath', implode(' ', $filePath));
 
         parent::exec();
 
@@ -71,7 +75,6 @@ class TeePipeComponent extends LinearPipeComponent implements TeePipeComponentIn
         return $this;
     }
 
-
     public function passParameters(array $parameters)
     {
         parent::passParameters($parameters);
@@ -85,9 +88,6 @@ class TeePipeComponent extends LinearPipeComponent implements TeePipeComponentIn
         return $this;
     }
 
-    /**
-     * @return Process[]
-     */
     public function getFileProcesses(): array
     {
         return $this->fileProcesses;
