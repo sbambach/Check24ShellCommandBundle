@@ -9,8 +9,9 @@ use Shopping\ShellCommandBundle\Utils\Exception\ShellCommandRuntimeError;
 use Shopping\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
 
 /**
+ * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>
  * @author    Silvester Denk <silvester.denk@check24.de>
- * @copyright 2017 CHECK24 Vergleichsportal Shopping GmbH <http://www.check24.de/>
+ * @copyright 2017 CHECK24 Vergleichsportal Shopping GmbH <http://preisvergleich.check24.de>
  */
 class LinearPipeComponent implements LinearPipeComponentInterface, LoggerAwareInterface
 {
@@ -40,24 +41,31 @@ class LinearPipeComponent implements LinearPipeComponentInterface, LoggerAwareIn
         return $this;
     }
 
+    public function replaceCommandParameters(array $parameters): PipeComponentInterface
+    {
+        $this->getStreamProcess()->getCommand()->setParameters($parameters);
+
+        return $this;
+    }
+
     public function getStreamProcess(): Process
     {
         return $this->streamProcess;
     }
 
-    public function setStreamProcess(Process $streamProcess): LinearPipeComponent
+    public function setStreamProcess(Process $streamProcess): PipeComponentInterface
     {
         $this->streamProcess = $streamProcess;
         return $this;
     }
 
-    public function setOutput(ResourceInterface $output): LinearPipeComponent
+    public function setOutput(ResourceInterface $output): PipeComponentInterface
     {
         $this->output = $output;
         return $this;
     }
 
-    public function setInput(ResourceInterface $input): LinearPipeComponent
+    public function setInput(ResourceInterface $input): PipeComponentInterface
     {
         $this->input = $input;
         return $this;
@@ -73,7 +81,7 @@ class LinearPipeComponent implements LinearPipeComponentInterface, LoggerAwareIn
         return $this->input;
     }
 
-    public function setCommand(array $command): LinearPipeComponent
+    public function setCommand(array $command): PipeComponentInterface
     {
         $this->command = $command;
         return $this;

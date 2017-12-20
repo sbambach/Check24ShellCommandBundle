@@ -4,12 +4,12 @@ namespace Shopping\ShellCommandBundle\DependencyInjection;
 
 use Shell\Process;
 use Shopping\ShellCommandBundle\Utils\Command\ParameterCommand;
-use Shopping\ShellCommandBundle\Utils\Exception\ShellCommandRuntimeError;
 use Shopping\ShellCommandBundle\Utils\Pipe\Component\LinearPipeComponent;
-use Shopping\ShellCommandBundle\Utils\Pipe\Component\LinearPipeComponentBuilder;
+use Shopping\ShellCommandBundle\Utils\Pipe\Component\PipeComponentFactory;
 use Shopping\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponent;
-use Shopping\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponentBuilder;
+use Shopping\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponentFactory;
 use Shopping\ShellCommandBundle\Utils\Pipe\Pipe;
+use Shopping\ShellCommandBundle\Utils\Pipe\PipeConnector;
 use Shopping\ShellCommandBundle\Utils\Pipe\PipeFactory;
 use Shopping\ShellCommandBundle\Utils\ProcessManager;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -23,7 +23,10 @@ use Symfony\Component\DependencyInjection\Loader;
 /**
  * This is the class that loads and manages your bundle configuration.
  *
- * @link http://symfony.com/doc/current/cookbook/bundles/extension.html
+ * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>
+ * @author    Silvester Denk <silvester.denk@check24.de>
+ * @copyright 2017 CHECK24 Vergleichsportal Shopping GmbH <http://preisvergleich.check24.de>
+ * @link      http://symfony.com/doc/current/cookbook/bundles/extension.html
  */
 class ShellCommandExtension extends Extension implements PrependExtensionInterface
 {
@@ -60,11 +63,7 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
         $commandDefinitions = [];
 
         $commandDefinitions = $this->createCommands($container, $config, $commandDefinitions);
-
-        $processManagerDefinition = new Definition(ProcessManager::class);
-        $processManagerDefinition->addArgument(new Reference('logger'));
-
-        $this->createPipes($container, $config, $commandDefinitions, $processManagerDefinition);
+        $this->createPipes($container, $config, $commandDefinitions);
     }
 
     public function prepend(ContainerBuilder $container)
@@ -124,12 +123,8 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
      * @param                  $commandDefinitions
      * @param                  $processManagerDefinition
      */
-    protected function createPipes(
-        ContainerBuilder $container,
-        array $config,
-        $commandDefinitions,
-        $processManagerDefinition
-    ): void {
+    protected function createPipes(ContainerBuilder $container, array $config, $commandDefinitions): void
+    {
         foreach ($config['pipes'] as $pipeName => $commands) {
             $pipeParts = [];
             foreach ($commands as $id => $commandNames) {
@@ -144,30 +139,34 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
 
             $pipeComponents = [];
 
+            $processManagerDefinition = new Definition(ProcessManager::class);
+            $processManagerDefinition->addMethodCall('setLogger', [$loggerReference]);
             foreach ($pipeParts as $id => $commands) {
                 $linearPipeComponent = $teePipeComponent = null;
                 foreach ($commands as $index => $command) {
                     $processDefinition = new Definition(Process::class, [$command]);
+                    $processManagerDefinition->addMethodCall('addProcess', [$processDefinition]);
 
                     if ($index === 0) {
                         $linearPipeComponent = new Definition(
                             LinearPipeComponent::class,
-                            [$loggerReference, $processDefinition]
+                            [LinearPipeComponent::class, $loggerReference, $processDefinition]
                         );
 
-                        $linearPipeComponent->setFactory([LinearPipeComponentBuilder::class, 'build']);
+                        $linearPipeComponent->setFactory([PipeComponentFactory::class, 'create']);
 
                         $pipeComponents[$id][] = $linearPipeComponent;
                     } elseif ($index === 1) {
                         $teeCommandDefinition = $container->getDefinition('shell_command.commands.tee');
                         $teeProcessDefinition = new Definition(Process::class, [$teeCommandDefinition]);
+                        $processManagerDefinition->addMethodCall('addProcess', [$teeProcessDefinition]);
 
                         $teePipeComponent = new Definition(
                             TeePipeComponent::class,
-                            [$linearPipeComponent, $loggerReference, $teeProcessDefinition]
+                            [TeePipeComponent::class, $loggerReference, $teeProcessDefinition]
                         );
 
-                        $teePipeComponent->setFactory([TeePipeComponentBuilder::class, 'build']);
+                        $teePipeComponent->setFactory([PipeComponentFactory::class, 'create']);
 
                         $pipeComponents[$id][] = $teePipeComponent;
                     }
@@ -185,6 +184,7 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
                     $pipeComponents,
                     $processManagerDefinition,
                     $loggerReference,
+                    new Definition(PipeConnector::class)
                 ]
             );
 

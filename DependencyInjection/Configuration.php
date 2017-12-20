@@ -7,9 +7,9 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Workflow\Definition;
 
 /**
- * This is the class that validates and merges configuration from your app/config files.
- *
- * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/configuration.html}
+ * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>
+ * @author    Silvester Denk <silvester.denk@check24.de>
+ * @copyright 2017 CHECK24 Vergleichsportal Shopping GmbH <http://preisvergleich.check24.de>
  */
 class Configuration implements ConfigurationInterface
 {

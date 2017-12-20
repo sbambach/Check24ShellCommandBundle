@@ -7,6 +7,11 @@ use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Shell\Process;
 
+/**
+ * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>
+ * @author    Silvester Denk <silvester.denk@check24.de>
+ * @copyright 2017 CHECK24 Vergleichsportal Shopping GmbH <http://preisvergleich.check24.de>
+ */
 class ProcessManager implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
@@ -15,11 +20,6 @@ class ProcessManager implements LoggerAwareInterface
      * @var Process[]
      */
     protected $processes = [];
-
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
 
     /**
      * @param Process $process

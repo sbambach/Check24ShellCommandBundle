@@ -2,10 +2,6 @@
 
 namespace Shopping\ShellCommandBundle\Utils\Pipe\Component;
 
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
-use Shell\Commands\Command;
-use Shell\Output\OutputHandler;
 use Shell\Process;
 use Shopping\ShellCommandBundle\Utils\Pipe\Resource\File;
 use Shopping\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
@@ -13,7 +9,8 @@ use Shopping\ShellCommandBundle\Utils\Pipe\Resource\Stream;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>
- * @copyright 2017 CHECK24 Vergleichsportal Shopping GmbH <http://www.check24.de/>
+ * @author    Silvester Denk <silvester.denk@check24.de>
+ * @copyright 2017 CHECK24 Vergleichsportal Shopping GmbH <http://preisvergleich.check24.de>
  */
 class TeePipeComponent extends LinearPipeComponent implements TeePipeComponentInterface
 {
