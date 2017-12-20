@@ -4,7 +4,6 @@ namespace Shopping\ShellCommandBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-use Symfony\Component\Workflow\Definition;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>
@@ -32,10 +31,7 @@ class Configuration implements ConfigurationInterface
                         ->children()
                             ->scalarNode('name')->end()
                             ->arrayNode('output')
-                                ->children()
-                                    ->scalarNode('type')->end()
-                                    ->scalarNode('path')->end()
-                                ->end()
+                                ->prototype('variable')->end()
                             ->end()
                             ->arrayNode('args')
                                 ->prototype('variable')->end()

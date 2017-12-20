@@ -26,7 +26,9 @@ class PipeConnector
             $pipeComponent->setInput($lastComponent->getOutput());
         }
 
-        $pipeComponent->setOutput($this->createResource(Stream::class, ResourceInterface::ACCESS_TYPE_WRITE));
+        if (empty($pipeComponent->getOutput())) {
+            $pipeComponent->setOutput($this->createResource(Stream::class, ResourceInterface::ACCESS_TYPE_WRITE));
+        }
 
         $this->connectedPipeComponents[] = $pipeComponent;
     }

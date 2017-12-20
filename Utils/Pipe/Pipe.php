@@ -36,7 +36,7 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
     /** @var  PipeConnector */
     protected $pipeConnector;
 
-    public function exec()
+    public function exec(): array
     {
         foreach ($this->components as $components) {
             /** @var LinearPipeComponentInterface $linearComponent */
@@ -52,7 +52,7 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
 
         $this->execComponents();
 
-        $this->processManager->waitAllProcesses();
+        return $this->processManager->waitAllProcesses();
     }
 
     public function setName(string $name): Pipe
@@ -87,7 +87,7 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
     protected function execComponents(): void
     {
         foreach ($this->pipeConnector->getConnectedPipeComponents() as $component) {
-            $component->replaceCommandParameters($this->getParameters());
+            $component->passParameters($this->getParameters());
             $component->exec();
         }
     }

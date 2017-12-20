@@ -51,9 +51,15 @@ class ProcessManager implements LoggerAwareInterface
         $processes = $this->processes;
         krsort($processes);
 
+        $results = [];
         foreach ($processes as $process) {
             try {
                 $process->wait();
+
+                $results[$process->getCommand()->getName()] = [
+                    Process::STDOUT => $process->getOutputHandler()->readStdOut(),
+                    Process::STDERR => $process->getOutputHandler()->readStdErr(),
+                ];
             } catch (\Exception $e) {
                 $this->killAllProcesses();
 
@@ -64,5 +70,7 @@ class ProcessManager implements LoggerAwareInterface
         }
 
         $this->processes = [];
+
+        return $results;
     }
 }

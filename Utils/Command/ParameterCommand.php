@@ -14,14 +14,28 @@ class ParameterCommand extends Command implements ParameterInterface
 {
     use ParameterTrait;
 
+    /**
+     * @var string
+     */
+    protected $name;
+
     public function serialize()
     {
         $serializedCommand = parent::serialize();
 
-        return preg_replace_callback('/\$\{(.*)\}/', function ($result) {
-            if (isset($this->parametersToParse[$result[1]])) {
-                return $this->parametersToParse[$result[1]];
-            }
-        }, $serializedCommand);
+        return $this->replaceParams($serializedCommand);
     }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): ParameterCommand
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+
 }

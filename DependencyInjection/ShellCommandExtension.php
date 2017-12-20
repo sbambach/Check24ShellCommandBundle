@@ -2,15 +2,18 @@
 
 namespace Shopping\ShellCommandBundle\DependencyInjection;
 
+use Shell\Commands\CommandInterface;
 use Shell\Process;
 use Shopping\ShellCommandBundle\Utils\Command\ParameterCommand;
 use Shopping\ShellCommandBundle\Utils\Pipe\Component\LinearPipeComponent;
 use Shopping\ShellCommandBundle\Utils\Pipe\Component\PipeComponentFactory;
+use Shopping\ShellCommandBundle\Utils\Pipe\Component\PipeComponentInterface;
 use Shopping\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponent;
 use Shopping\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponentFactory;
 use Shopping\ShellCommandBundle\Utils\Pipe\Pipe;
 use Shopping\ShellCommandBundle\Utils\Pipe\PipeConnector;
 use Shopping\ShellCommandBundle\Utils\Pipe\PipeFactory;
+use Shopping\ShellCommandBundle\Utils\Pipe\Resource\File;
 use Shopping\ShellCommandBundle\Utils\ProcessManager;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -109,9 +112,14 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
                 ParameterCommand::class,
                 [$command['name'], $command['args'] ?? [], $options ?? []]
             );
+            $commandDefinition->addMethodCall('setName', [$commandName]);
 
             $container->setDefinition(sprintf('shell_command.commands.%s', $commandName), $commandDefinition);
-            $commandDefinitions[$commandName] = $commandDefinition;
+
+            $commandDefinitions[$commandName] = [
+                'definition' => $commandDefinition,
+                'output' => $command['output'] ?? [],
+            ];
         }
 
         return $commandDefinitions;
@@ -120,11 +128,12 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
     /**
      * @param ContainerBuilder $container
      * @param array            $config
-     * @param                  $commandDefinitions
-     * @param                  $processManagerDefinition
+     * @param array            $commandDefinitions
      */
     protected function createPipes(ContainerBuilder $container, array $config, $commandDefinitions): void
     {
+        $loggerReference = new Reference('logger');
+
         foreach ($config['pipes'] as $pipeName => $commands) {
             $pipeParts = [];
             foreach ($commands as $id => $commandNames) {
@@ -135,8 +144,6 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
             }
             unset($commands, $id);
 
-            $loggerReference = new Reference('logger');
-
             $pipeComponents = [];
 
             $processManagerDefinition = new Definition(ProcessManager::class);
@@ -144,7 +151,7 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
             foreach ($pipeParts as $id => $commands) {
                 $linearPipeComponent = $teePipeComponent = null;
                 foreach ($commands as $index => $command) {
-                    $processDefinition = new Definition(Process::class, [$command]);
+                    $processDefinition = new Definition(Process::class, [$command['definition']]);
                     $processManagerDefinition->addMethodCall('addProcess', [$processDefinition]);
 
                     if ($index === 0) {
@@ -154,6 +161,8 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
                         );
 
                         $linearPipeComponent->setFactory([PipeComponentFactory::class, 'create']);
+
+                        $this->createOutputDefinition($command, $linearPipeComponent);
 
                         $pipeComponents[$id][] = $linearPipeComponent;
                     } elseif ($index === 1) {
@@ -172,7 +181,9 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
                     }
 
                     if ($index >= 1) {
-                        $teePipeComponent->addMethodCall('addFileProcess', [$processDefinition]);
+                        $outputDefinition = $this->createOutputDefinition($command);
+
+                        $teePipeComponent->addMethodCall('addFileProcess', [$processDefinition, $outputDefinition]);
                     }
                 }
             }
@@ -191,5 +202,23 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
             $pipeDefinition->setFactory([PipeFactory::class, 'createPipe']);
             $container->setDefinition(sprintf('shell_command.pipes.%s', $pipeName), $pipeDefinition);
         }
+    }
+
+    protected function createOutputDefinition(array $command, Definition $pipeComponent = null): ?Definition
+    {
+        if (!empty($command['output'])) {
+            $accessType = $command['output']['accessType'] ?? File::ACCESS_TYPE_WRITE;
+            $outputDefinition = new Definition(File::class, []);
+            $outputDefinition->addMethodCall('setAccessType', [$accessType]);
+            $outputDefinition->addMethodCall('setResource', [$command['output']['path']]);
+
+            if ($pipeComponent) {
+                $pipeComponent->addMethodCall('setOutput', [$outputDefinition]);
+            }
+
+            return $outputDefinition;
+        }
+
+        return null;
     }
 }

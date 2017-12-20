@@ -27,4 +27,22 @@ trait ParameterTrait
     {
         return $this->parametersToParse;
     }
+
+    /**
+     * @param $subject
+     *
+     * @return mixed
+     */
+    protected function replaceParams($subject)
+    {
+        return preg_replace_callback(
+            '/\$\{(.*)\}/',
+            function ($result) {
+                if (isset($this->parametersToParse[$result[1]])) {
+                    return $this->parametersToParse[$result[1]];
+                }
+            },
+            $subject
+        );
+    }
 }

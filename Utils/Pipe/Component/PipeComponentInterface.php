@@ -13,11 +13,11 @@ use Shopping\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
 interface PipeComponentInterface
 {
     public function exec(): PipeComponentInterface;
-    public function replaceCommandParameters(array $parameters): PipeComponentInterface;
+    public function passParameters(array $parameters);
     public function setInput(ResourceInterface $resource): PipeComponentInterface;
     public function setOutput(ResourceInterface $resource): PipeComponentInterface;
-    public function getInput(): ResourceInterface;
-    public function getOutput(): ResourceInterface;
-    public function getStreamProcess(): Process;
+    public function getInput(): ?ResourceInterface;
+    public function getOutput(): ?ResourceInterface;
+    public function getStreamProcess(): ?Process;
     public function setStreamProcess(Process $process): PipeComponentInterface;
 }

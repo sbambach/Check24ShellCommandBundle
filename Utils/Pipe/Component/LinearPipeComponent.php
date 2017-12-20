@@ -5,7 +5,9 @@ namespace Shopping\ShellCommandBundle\Utils\Pipe\Component;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Shell\Process;
+use Shopping\ShellCommandBundle\Utils\Command\ParameterInterface;
 use Shopping\ShellCommandBundle\Utils\Exception\ShellCommandRuntimeError;
+use Shopping\ShellCommandBundle\Utils\Pipe\Resource\File;
 use Shopping\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
 
 /**
@@ -18,7 +20,7 @@ class LinearPipeComponent implements LinearPipeComponentInterface, LoggerAwareIn
     use LoggerAwareTrait;
 
     /** @var Process */
-    protected $command;
+    protected $streamProcess;
 
     /** @var  ResourceInterface */
     protected $output;
@@ -36,19 +38,29 @@ class LinearPipeComponent implements LinearPipeComponentInterface, LoggerAwareIn
             $this->output->openResourceHandle()
         );
 
-        $this->output->setResource($this->getStreamProcess()->getStdout());
+        if (!$this->output instanceof File) {
+            $this->output->setResource($this->getStreamProcess()->getStdout());
+        }
 
         return $this;
     }
 
-    public function replaceCommandParameters(array $parameters): PipeComponentInterface
+    public function passParameters(array $parameters)
     {
+        if ($this->getOutput() instanceof ParameterInterface) {
+            $this->getOutput()->setParameters($parameters);
+        }
+
+        if ($this->getInput() instanceof ParameterInterface) {
+            $this->getInput()->setParameters($parameters);
+        }
+
         $this->getStreamProcess()->getCommand()->setParameters($parameters);
 
         return $this;
     }
 
-    public function getStreamProcess(): Process
+    public function getStreamProcess(): ?Process
     {
         return $this->streamProcess;
     }
@@ -71,12 +83,12 @@ class LinearPipeComponent implements LinearPipeComponentInterface, LoggerAwareIn
         return $this;
     }
 
-    public function getOutput(): ResourceInterface
+    public function getOutput(): ?ResourceInterface
     {
         return $this->output;
     }
 
-    public function getInput(): ResourceInterface
+    public function getInput(): ?ResourceInterface
     {
         return $this->input;
     }

@@ -3,6 +3,7 @@
 namespace Shopping\ShellCommandBundle\Utils\Pipe\Component;
 
 use Shell\Process;
+use Shopping\ShellCommandBundle\Utils\Command\ParameterInterface;
 use Shopping\ShellCommandBundle\Utils\Pipe\Resource\File;
 use Shopping\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
 use Shopping\ShellCommandBundle\Utils\Pipe\Resource\Stream;
@@ -23,37 +24,63 @@ class TeePipeComponent extends LinearPipeComponent implements TeePipeComponentIn
     {
         $inputs = [];
         foreach ($this->fileProcesses as $fileProcess) {
-            $command = $fileProcess->getCommand()->serialize();
-            $inputs[$command] = new File();
-            $inputs[$command]->openResourceHandle();
+            $name = $fileProcess['process']->getCommand()->getName();
+
+            $inputs[$name] = new File();
+            $inputs[$name]->openResourceHandle();
         }
 
-        $this->getStreamProcess()->getCommand()->setParameters(['filePath' => reset($inputs)->getFileName()]);
+        $this->getStreamProcess()->getCommand()->setParameters(['filePath' => reset($inputs)->getFilename()]);
 
         parent::exec();
 
         foreach ($this->fileProcesses as $fileProcess) {
-            $command = $fileProcess->getCommand()->serialize();
+            $process = $fileProcess['process'];
+            $output  = $fileProcess['output'];
+            $name    = $process->getCommand()->getName();
+            $command = $process->getCommand()->serialize();
+
             $this->logger->debug('Running command : {command}', ['command' => $command]);
 
-            $output = new Stream();
-            $output->setAccessType(ResourceInterface::ACCESS_TYPE_WRITE);
+            if (empty($output)) {
+                $output = new Stream();
+                $output->setAccessType(ResourceInterface::ACCESS_TYPE_WRITE);
+            }
 
             $this->runProcessAsync(
-                $fileProcess,
-                reset($inputs)->openResourceHandle(),
+                $process,
+                $inputs[$name]->openResourceHandle(),
                 $output->openResourceHandle()
             );
 
-            $output->setResource($fileProcess->getStdout());
+            if (!$output instanceof File) {
+                $output->setResource($process->getStdout());
+            }
         }
 
         return $this;
     }
 
-    public function addFileProcess(Process $process): PipeComponentInterface
+    public function addFileProcess(Process $process, ResourceInterface $output = null): PipeComponentInterface
     {
-        $this->fileProcesses[] = $process;
+        $this->fileProcesses[] = [
+            'process' => $process,
+            'output'  => $output,
+        ];
+
+        return $this;
+    }
+
+
+    public function passParameters(array $parameters)
+    {
+        parent::passParameters($parameters);
+
+        foreach ($this->getFileProcesses() as $fileProcess) {
+            if ($fileProcess['output'] instanceof ParameterInterface) {
+                $fileProcess['output']->setParameters($parameters);
+            }
+        }
 
         return $this;
     }
