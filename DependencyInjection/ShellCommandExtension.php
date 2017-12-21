@@ -33,14 +33,6 @@ use Symfony\Component\DependencyInjection\Loader;
  */
 class ShellCommandExtension extends Extension implements PrependExtensionInterface
 {
-//    public function prepend(ContainerBuilder $container)
-//    {
-//        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-//        $loader->load('config.yml');
-//
-//        $container->prependExtensionConfig($this->getAlias(), $config);
-//    }
-
     /**
      * {@inheritdoc}
      */
@@ -53,7 +45,6 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
-//        $loader->load('config.yml');
     }
     /**
      * Update parameters using configuratoin values.
@@ -64,27 +55,22 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
     protected function updateContainerParameters(ContainerBuilder $container, array $config)
     {
         $commandDefinitions = [];
-
         $commandDefinitions = $this->createCommands($container, $config, $commandDefinitions);
         $this->createPipes($container, $config, $commandDefinitions);
     }
 
     public function prepend(ContainerBuilder $container)
     {
-        $config =
-            [
-                'commands' =>
-                    [
-                        'tee' =>
-                            [
-                                'name' => 'tee',
-                                'args' =>
-                                    [
-                                        '${filePath}',
-                                    ],
-                            ],
+        $config = [
+            'commands' => [
+                'tee' => [
+                    'name' => 'tee',
+                    'args' => [
+                        '${filePath}',
                     ],
-            ];
+                ],
+            ],
+        ];
 
         $container->prependExtensionConfig('shell_command', $config);
     }
@@ -146,36 +132,29 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
 
             $pipeComponents = [];
 
-            $processManagerDefinition = new Definition(ProcessManager::class);
-            $processManagerDefinition->addMethodCall('setLogger', [$loggerReference]);
+            $processManagerDefinition = $this->createProcessManagerDefinition($loggerReference);
             foreach ($pipeParts as $id => $commands) {
-                $linearPipeComponent = $teePipeComponent = null;
                 foreach ($commands as $index => $command) {
-                    $processDefinition = new Definition(Process::class, [$command['definition']]);
-                    $processManagerDefinition->addMethodCall('addProcess', [$processDefinition]);
+                    $processDefinition = $this->createProcessDefinition($command, $processManagerDefinition);
 
                     if ($index === 0) {
-                        $linearPipeComponent = new Definition(
+                        $linearPipeComponent = $this->createPipeComponentDefinition(
                             LinearPipeComponent::class,
-                            [LinearPipeComponent::class, $loggerReference, $processDefinition]
+                            $loggerReference,
+                            $processDefinition
                         );
-
-                        $linearPipeComponent->setFactory([PipeComponentFactory::class, 'create']);
 
                         $this->createOutputDefinition($command, $linearPipeComponent);
 
                         $pipeComponents[$id][] = $linearPipeComponent;
                     } elseif ($index === 1) {
-                        $teeCommandDefinition = $container->getDefinition('shell_command.commands.tee');
-                        $teeProcessDefinition = new Definition(Process::class, [$teeCommandDefinition]);
-                        $processManagerDefinition->addMethodCall('addProcess', [$teeProcessDefinition]);
+                        $teeProcessDefinition = $this->createTeeProcessDefinition($container, $processManagerDefinition);
 
-                        $teePipeComponent = new Definition(
+                        $teePipeComponent = $this->createPipeComponentDefinition(
                             TeePipeComponent::class,
-                            [TeePipeComponent::class, $loggerReference, $teeProcessDefinition]
+                            $loggerReference,
+                            $teeProcessDefinition
                         );
-
-                        $teePipeComponent->setFactory([PipeComponentFactory::class, 'create']);
 
                         $pipeComponents[$id][] = $teePipeComponent;
                     }
@@ -188,17 +167,7 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
                 }
             }
 
-            $pipeDefinition = new Definition(
-                Pipe::class,
-                [
-                    $pipeComponents,
-                    $processManagerDefinition,
-                    $loggerReference,
-                    new Definition(PipeConnector::class)
-                ]
-            );
-
-            $pipeDefinition->setFactory([PipeFactory::class, 'createPipe']);
+            $pipeDefinition = $this->createPipeDefinition($pipeComponents, $processManagerDefinition, $loggerReference);
             $container->setDefinition(sprintf('shell_command.pipes.%s', $pipeName), $pipeDefinition);
         }
     }
@@ -219,5 +188,80 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
         }
 
         return null;
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param Definition       $processManagerDefinition
+     *
+     * @return Definition
+     */
+    protected function createTeeProcessDefinition(ContainerBuilder $container, $processManagerDefinition): Definition
+    {
+        $teeCommandDefinition = $container->getDefinition('shell_command.commands.tee');
+        $teeProcessDefinition = new Definition(Process::class, [$teeCommandDefinition]);
+        $processManagerDefinition->addMethodCall('addProcess', [$teeProcessDefinition]);
+        return $teeProcessDefinition;
+    }
+
+    /**
+     * @param $loggerReference
+     * @param $processDefinition
+     *
+     * @return Definition
+     */
+    protected function createPipeComponentDefinition($class, $loggerReference, $processDefinition): Definition
+    {
+        $pipeComponent = new Definition(
+            $class,
+            [$class, $loggerReference, $processDefinition]
+        );
+
+        $pipeComponent->setFactory([PipeComponentFactory::class, 'create']);
+
+        return $pipeComponent;
+    }
+
+    protected function createProcessDefinition(array $command, Definition $processManagerDefinition): Definition
+    {
+        $processDefinition = new Definition(Process::class, [$command['definition']]);
+        $processManagerDefinition->addMethodCall('addProcess', [$processDefinition]);
+        return $processDefinition;
+    }
+
+    /**
+     * @param $loggerReference
+     *
+     * @return Definition
+     */
+    protected function createProcessManagerDefinition(Reference $loggerReference): Definition
+    {
+        $processManagerDefinition = new Definition(ProcessManager::class);
+        $processManagerDefinition->addMethodCall('setLogger', [$loggerReference]);
+        return $processManagerDefinition;
+    }
+
+    /**
+     * @param $pipeComponents
+     * @param $processManagerDefinition
+     * @param $loggerReference
+     *
+     * @return Definition
+     */
+    protected function createPipeDefinition($pipeComponents, Definition $processManagerDefinition, Reference $loggerReference): Definition
+    {
+        $pipeDefinition = new Definition(
+            Pipe::class,
+            [
+                $pipeComponents,
+                $processManagerDefinition,
+                $loggerReference,
+                new Definition(PipeConnector::class)
+            ]
+        );
+
+        $pipeDefinition->setFactory([PipeFactory::class, 'createPipe']);
+
+        return $pipeDefinition;
     }
 }
