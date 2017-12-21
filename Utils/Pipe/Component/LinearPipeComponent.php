@@ -57,7 +57,9 @@ class LinearPipeComponent implements LinearPipeComponentInterface, LoggerAwareIn
             $this->getInput()->setParameters($parameters);
         }
 
-        $this->getStreamProcess()->getCommand()->setParameters($parameters);
+        if ($this->getStreamProcess()->getCommand() instanceof ParameterInterface) {
+            $this->getStreamProcess()->getCommand()->setParameters($parameters);
+        }
 
         return $this;
     }
@@ -95,18 +97,12 @@ class LinearPipeComponent implements LinearPipeComponentInterface, LoggerAwareIn
         return $this->input;
     }
 
-    public function setCommand(array $command): PipeComponentInterface
-    {
-        $this->command = $command;
-        return $this;
-    }
-
     public function getExpectedExitCodes(): array
     {
         return $this->expectedExitCodes;
     }
 
-    public function setExitCodes(array $expectedExitCodes): PipeComponentInterface
+    public function setExpectedExitCodes(array $expectedExitCodes): PipeComponentInterface
     {
         $this->expectedExitCodes = $expectedExitCodes;
         return $this;

@@ -49,8 +49,7 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
 
     protected function updateContainerParameters(ContainerBuilder $container, array $config)
     {
-        $commandDefinitions = [];
-        $commandDefinitions = $this->createCommands($container, $config, $commandDefinitions);
+        $commandDefinitions = $this->createCommands($container, $config);
         $this->createPipes($container, $config, $commandDefinitions);
     }
 
@@ -70,8 +69,9 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
         $container->prependExtensionConfig('shell_command', $config);
     }
 
-    protected function createCommands(ContainerBuilder $container, array $config, $commandDefinitions): array
+    protected function createCommands(ContainerBuilder $container, array $config): array
     {
+        $commandDefinitions = [];
         foreach ($config['commands'] as $commandName => $command) {
             $options = [];
             foreach ($command['options'] as $option) {
@@ -86,14 +86,15 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
                 ParameterCommand::class,
                 [$command['name'], $command['args'] ?? [], $options ?? []]
             );
+
             $commandDefinition->addMethodCall('setName', [$commandName]);
 
             $container->setDefinition(sprintf('shell_command.commands.%s', $commandName), $commandDefinition);
 
             $commandDefinitions[$commandName] = [
                 'definition' => $commandDefinition,
-                'output' => $command['output'] ?? [],
-                'exitCodes' => $command['expectedExitCodes'] ?? [0],
+                'output'     => $command['output'] ?? [],
+                'exitCodes'  => $command['expectedExitCodes'] ?? [0],
             ];
         }
 

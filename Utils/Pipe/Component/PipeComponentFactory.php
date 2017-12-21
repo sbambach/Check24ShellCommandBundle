@@ -22,7 +22,7 @@ class PipeComponentFactory
         $component = new $class;
         $component->setLogger($logger);
         $component->setStreamProcess($process);
-        $component->setExitCodes($exitCodes);
+        $component->setExpectedExitCodes($exitCodes);
 
         return $component;
     }

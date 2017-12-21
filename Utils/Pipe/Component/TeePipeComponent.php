@@ -39,6 +39,7 @@ class TeePipeComponent extends LinearPipeComponent implements TeePipeComponentIn
         foreach ($this->fileProcesses as $fileProcess) {
             $process = $fileProcess['process'];
             $output  = $fileProcess['output'];
+            $input   = $inputs[$name];
             $name    = $process->getCommand()->getName();
             $command = $process->getCommand()->serialize();
 
@@ -51,7 +52,7 @@ class TeePipeComponent extends LinearPipeComponent implements TeePipeComponentIn
 
             $this->runProcessAsync(
                 $process,
-                $inputs[$name]->openResourceHandle(),
+                $input->openResourceHandle(),
                 $output->openResourceHandle()
             );
 

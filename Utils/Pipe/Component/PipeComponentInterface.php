@@ -20,5 +20,5 @@ interface PipeComponentInterface
     public function getOutput(): ?ResourceInterface;
     public function getStreamProcess(): ?Process;
     public function setStreamProcess(Process $process): PipeComponentInterface;
-    public function setExitCodes(array $exitCodes): PipeComponentInterface;
+    public function setExpectedExitCodes(array $exitCodes): PipeComponentInterface;
 }

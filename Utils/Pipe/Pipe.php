@@ -40,30 +40,24 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
     /** @var  CommandInterface */
     protected $teeCommand;
 
-    /**
-     * @param CommandInterface $teeCommand
-     */
-    public function setTeeCommand(CommandInterface $teeCommand)
-    {
-        $this->teeCommand = $teeCommand;
-    }
-
     /** @var  array */
     protected $commandOutputs;
 
     /** @var  ProcessManager */
     protected $processManager;
+
     /** @var  PipeConnector */
     protected $pipeConnector;
 
     public function exec(): array
     {
+        $this->pipeConnector  = new PipeConnector();
         $this->processManager = new ProcessManager();
         $this->processManager->setLogger($this->logger);
 
-        $this->pipeConnector = new PipeConnector();
         $this->buildPipe();
         $this->execComponents();
+
         return $this->processManager->waitAllProcesses();
     }
 
@@ -71,8 +65,7 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
     {
         foreach ($this->commands as $id => $commands) {
             foreach ($commands as $index => $command) {
-                $process = new Process($command['definition']);
-                $this->processManager->addProcess($process);
+                $process = $this->createProcess($command['definition']);
 
                 if ($index === 0) {
                     $linearPipeComponent = PipeComponentFactory::create(LinearPipeComponent::class, $this->logger, $process, $command['exitCodes']);
@@ -80,8 +73,8 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
                     $this->pipeConnector->extendPipe($linearPipeComponent);
                     $this->components[$id][] = $linearPipeComponent;
                 } elseif ($index === 1) {
-                    $teeProcess = new Process($this->teeCommand);
-                    $this->processManager->addProcess($teeProcess);
+                    $teeProcess = $this->createProcess($this->teeCommand);
+
                     /** @var TeePipeComponentInterface $teePipeComponent */
                     $teePipeComponent = PipeComponentFactory::create(TeePipeComponent::class, $this->logger, $teeProcess, $command['exitCodes']);
                     $this->pipeConnector->extendPipe($teePipeComponent);
@@ -93,6 +86,14 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
                     $teePipeComponent->addFileProcess($process, $output);
                 }
             }
+        }
+    }
+
+    protected function execComponents(): void
+    {
+        foreach ($this->pipeConnector->getConnectedPipeComponents() as $component) {
+            $component->passParameters($this->getParameters());
+            $component->exec();
         }
     }
 
@@ -114,12 +115,19 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
         return null;
     }
 
-    protected function execComponents(): void
+    protected function createProcess(CommandInterface $command): Process
     {
-        foreach ($this->pipeConnector->getConnectedPipeComponents() as $component) {
-            $component->passParameters($this->getParameters());
-            $component->exec();
-        }
+        $process = new Process($command);
+        $this->processManager->addProcess($process);
+        return $process;
+    }
+
+    /**
+     * @param CommandInterface $teeCommand
+     */
+    public function setTeeCommand(CommandInterface $teeCommand)
+    {
+        $this->teeCommand = $teeCommand;
     }
 
     public function setCommands(array $commands): Pipe
@@ -127,4 +135,4 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
         $this->commands = $commands;
         return $this;
     }
-    }
+}
