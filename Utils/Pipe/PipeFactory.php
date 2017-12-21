@@ -17,13 +17,12 @@ use Shopping\ShellCommandBundle\Utils\ProcessManager;
  */
 class PipeFactory
 {
-    public static function createPipe($components, ProcessManager $processManager, LoggerInterface $logger, PipeConnector $pipeConnector)
+    public static function createPipe($commands, LoggerInterface $logger, $teeCommand)
     {
         $pipe = new Pipe();
-        $pipe->setComponents($components);
-        $pipe->setProcessManager($processManager);
+        $pipe->setCommands($commands);
         $pipe->setLogger($logger);
-        $pipe->setPipeConnector($pipeConnector);
+        $pipe->setTeeCommand($teeCommand);
         return $pipe;
     }
 }

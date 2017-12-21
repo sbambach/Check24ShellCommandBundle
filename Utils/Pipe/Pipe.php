@@ -4,11 +4,18 @@ namespace Shopping\ShellCommandBundle\Utils\Pipe;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Shell\Commands\CommandInterface;
+use Shell\Process;
 use Shopping\ShellCommandBundle\Utils\Command\ParameterInterface;
 use Shopping\ShellCommandBundle\Utils\Command\ParameterTrait;
+use Shopping\ShellCommandBundle\Utils\Pipe\Component\LinearPipeComponent;
 use Shopping\ShellCommandBundle\Utils\Pipe\Component\LinearPipeComponentInterface;
+use Shopping\ShellCommandBundle\Utils\Pipe\Component\PipeComponentFactory;
 use Shopping\ShellCommandBundle\Utils\Pipe\Component\PipeComponentInterface;
+use Shopping\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponent;
 use Shopping\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponentInterface;
+use Shopping\ShellCommandBundle\Utils\Pipe\Resource\File;
+use Shopping\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
 use Shopping\ShellCommandBundle\Utils\ProcessManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -27,28 +34,84 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
     /** @var  PipeComponentInterface[] */
     protected $components;
 
+    /** @var  CommandInterface */
+    protected $commands;
+
+    /** @var  CommandInterface */
+    protected $teeCommand;
+
+    /**
+     * @param CommandInterface $teeCommand
+     */
+    public function setTeeCommand(CommandInterface $teeCommand)
+    {
+        $this->teeCommand = $teeCommand;
+    }
+
+    /** @var  array */
+    protected $commandOutputs;
+
     /** @var  ProcessManager */
     protected $processManager;
-
     /** @var  PipeConnector */
     protected $pipeConnector;
 
     public function exec(): array
     {
+        $this->processManager = new ProcessManager();
+        $this->processManager->setLogger($this->logger);
+
+        $this->pipeConnector = new PipeConnector();
         $this->buildPipe();
-
         $this->execComponents();
-
         return $this->processManager->waitAllProcesses();
     }
 
     protected function buildPipe(): void
     {
-        foreach ($this->components as $components) {
-            foreach ($components as $component) {
-                $this->pipeConnector->extendPipe($component);
+        foreach ($this->commands as $id => $commands) {
+            foreach ($commands as $index => $command) {
+                $process = new Process($command['definition']);
+                $this->processManager->addProcess($process);
+
+                if ($index === 0) {
+                    $linearPipeComponent = PipeComponentFactory::create(LinearPipeComponent::class, $this->logger, $process, $command['exitCodes']);
+                    $this->createOutput($command, $linearPipeComponent);
+                    $this->pipeConnector->extendPipe($linearPipeComponent);
+                    $this->components[$id][] = $linearPipeComponent;
+                } elseif ($index === 1) {
+                    $teeProcess = new Process($this->teeCommand);
+                    $this->processManager->addProcess($teeProcess);
+                    /** @var TeePipeComponentInterface $teePipeComponent */
+                    $teePipeComponent = PipeComponentFactory::create(TeePipeComponent::class, $this->logger, $teeProcess, $command['exitCodes']);
+                    $this->pipeConnector->extendPipe($teePipeComponent);
+                    $this->components[$id][] = $teePipeComponent;
+                }
+
+                if ($index >= 1) {
+                    $output = $this->createOutput($command);
+                    $teePipeComponent->addFileProcess($process, $output);
+                }
             }
         }
+    }
+
+    protected function createOutput(array $command, PipeComponentInterface $pipeComponent = null): ?ResourceInterface
+    {
+        if (!empty($command['output'])) {
+            $accessType = $command['output']['accessType'] ?? File::ACCESS_TYPE_WRITE;
+            $output = new File();
+            $output->setAccessType($accessType);
+            $output->setResource($command['output']['path']);
+
+            if ($pipeComponent) {
+                $pipeComponent->setOutput($output);
+            }
+
+            return $output;
+        }
+
+        return null;
     }
 
     protected function execComponents(): void
@@ -59,26 +122,9 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
         }
     }
 
-    public function setComponents(array $components): Pipe
+    public function setCommands(array $commands): Pipe
     {
-        $this->components = $components;
+        $this->commands = $commands;
         return $this;
     }
-
-    public function setProcessManager(ProcessManager $processManager): Pipe
-    {
-        $this->processManager = $processManager;
-        return $this;
     }
-
-    public function getPipeConnector(): PipeConnector
-    {
-        return $this->pipeConnector;
-    }
-
-    public function setPipeConnector(PipeConnector $pipeConnector): Pipe
-    {
-        $this->pipeConnector = $pipeConnector;
-        return $this;
-    }
-}

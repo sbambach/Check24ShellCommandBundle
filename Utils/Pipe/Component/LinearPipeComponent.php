@@ -22,6 +22,8 @@ class LinearPipeComponent implements LinearPipeComponentInterface, LoggerAwareIn
     /** @var Process */
     protected $streamProcess;
 
+    protected $expectedExitCodes;
+
     /** @var  ResourceInterface */
     protected $output;
 
@@ -99,11 +101,23 @@ class LinearPipeComponent implements LinearPipeComponentInterface, LoggerAwareIn
         return $this;
     }
 
+    public function getExpectedExitCodes(): array
+    {
+        return $this->expectedExitCodes;
+    }
+
+    public function setExitCodes(array $expectedExitCodes): PipeComponentInterface
+    {
+        $this->expectedExitCodes = $expectedExitCodes;
+        return $this;
+    }
+
     protected function runProcessAsync(Process $process, $input, $output): PipeComponentInterface
     {
         $process
             ->setStdin($input)
             ->setStdout($output)
+            ->setExpectedExitcodes($this->getExpectedExitCodes())
             ->onError(
                 function (Process $process) {
                     throw new ShellCommandRuntimeError(sprintf('Error: %s', $process->getOutputHandler()->readStdErr()));

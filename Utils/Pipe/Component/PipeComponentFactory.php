@@ -12,15 +12,17 @@ use Shell\Process;
  */
 class PipeComponentFactory
 {
-    public static function create(string $class, LoggerInterface $logger, Process $process): PipeComponentInterface
+    public static function create(string $class, LoggerInterface $logger, Process $process, array $exitCodes): PipeComponentInterface
     {
         if (!is_subclass_of($class, PipeComponentInterface::class)) {
             throw new \InvalidArgumentException(sprintf('Cannot create object of unsupported class %s', $class));
         }
 
+        /** @var PipeComponentInterface $component */
         $component = new $class;
         $component->setLogger($logger);
         $component->setStreamProcess($process);
+        $component->setExitCodes($exitCodes);
 
         return $component;
     }

@@ -15,9 +15,7 @@ use Shopping\ShellCommandBundle\Utils\Pipe\Resource\Stream;
  */
 class TeePipeComponent extends LinearPipeComponent implements TeePipeComponentInterface
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $fileProcesses;
 
     public function exec(): PipeComponentInterface

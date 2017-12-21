@@ -43,9 +43,6 @@ class ProcessManager implements LoggerAwareInterface
         }
     }
 
-    /**
-     *
-     */
     public function waitAllProcesses()
     {
         $processes = $this->processes;
