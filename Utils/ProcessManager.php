@@ -5,7 +5,9 @@ namespace Shopping\ShellCommandBundle\Utils;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Shell\Process;
+use Shopping\ShellCommandBundle\Utils\Command\ParameterCommand;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>
@@ -20,6 +22,11 @@ class ProcessManager implements LoggerAwareInterface
      * @var Process[]
      */
     protected $processes = [];
+
+    public function __construct()
+    {
+        $this->logger = new NullLogger();
+    }
 
     /**
      * @param Process $process
@@ -53,9 +60,18 @@ class ProcessManager implements LoggerAwareInterface
             try {
                 $process->wait();
 
-                $results[$process->getCommand()->getName()] = [
-                    Process::STDOUT => $process->getOutputHandler()->readStdOut(),
-                    Process::STDERR => $process->getOutputHandler()->readStdErr(),
+                $command = $process->getCommand();
+                if ($command instanceof ParameterCommand) {
+                    $name = $command->getName();
+                } else {
+                    $name = $command->serialize();
+                }
+
+                $outputHandler = $process->getOutputHandler();
+
+                $results[$name] = [
+                    Process::STDOUT => $outputHandler->readStdOut(),
+                    Process::STDERR => $outputHandler->readStdErr(),
                 ];
             } catch (\Exception $e) {
                 $this->killAllProcesses();

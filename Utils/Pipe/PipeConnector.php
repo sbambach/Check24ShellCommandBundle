@@ -22,7 +22,7 @@ class PipeConnector
 
         if (empty($lastComponent)) {
             $pipeComponent->setInput(new Stream());
-        } else {
+        } else if ($lastComponent->getOutput() instanceof ResourceInterface) {
             $pipeComponent->setInput($lastComponent->getOutput());
         }
 
