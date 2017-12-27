@@ -31,7 +31,7 @@ trait ParameterTrait
     protected function replaceParams(string $subject): string
     {
         return preg_replace_callback(
-            '/\$\{(.*)\}/',
+            '/\$\{(.*?)\}/',
             function ($result) {
                 if (isset($this->parametersToParse[$result[1]])) {
                     return $this->parametersToParse[$result[1]];
