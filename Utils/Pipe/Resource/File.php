@@ -11,7 +11,7 @@ use Shopping\ShellCommandBundle\Utils\Exception\IOException;
  * @author    Silvester Denk <silvester.denk@check24.de>
  * @copyright 2017 CHECK24 Vergleichsportal Shopping GmbH <http://preisvergleich.check24.de>
  */
-class File extends Stream implements FileInterface, ParameterInterface
+class File extends Stream implements ParameterInterface
 {
     use ParameterTrait;
 

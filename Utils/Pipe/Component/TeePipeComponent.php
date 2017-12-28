@@ -13,7 +13,7 @@ use Shopping\ShellCommandBundle\Utils\Pipe\Resource\Stream;
  * @author    Silvester Denk <silvester.denk@check24.de>
  * @copyright 2017 CHECK24 Vergleichsportal Shopping GmbH <http://preisvergleich.check24.de>
  */
-class TeePipeComponent extends LinearPipeComponent implements TeePipeComponentInterface
+class TeePipeComponent extends LinearPipeComponent
 {
     /** @var array */
     protected $fileProcesses;

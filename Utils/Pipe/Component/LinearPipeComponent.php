@@ -15,7 +15,7 @@ use Shopping\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
  * @author    Silvester Denk <silvester.denk@check24.de>
  * @copyright 2017 CHECK24 Vergleichsportal Shopping GmbH <http://preisvergleich.check24.de>
  */
-class LinearPipeComponent implements LinearPipeComponentInterface, LoggerAwareInterface
+class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 

@@ -9,11 +9,9 @@ use Shell\Process;
 use Shopping\ShellCommandBundle\Utils\Command\ParameterInterface;
 use Shopping\ShellCommandBundle\Utils\Command\ParameterTrait;
 use Shopping\ShellCommandBundle\Utils\Pipe\Component\LinearPipeComponent;
-use Shopping\ShellCommandBundle\Utils\Pipe\Component\LinearPipeComponentInterface;
 use Shopping\ShellCommandBundle\Utils\Pipe\Component\PipeComponentFactory;
 use Shopping\ShellCommandBundle\Utils\Pipe\Component\PipeComponentInterface;
 use Shopping\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponent;
-use Shopping\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponentInterface;
 use Shopping\ShellCommandBundle\Utils\Pipe\Resource\File;
 use Shopping\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
 use Shopping\ShellCommandBundle\Utils\ProcessManager;
@@ -75,7 +73,7 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
                 } elseif ($index === 1) {
                     $teeProcess = $this->createProcess($this->teeCommand);
 
-                    /** @var TeePipeComponentInterface $teePipeComponent */
+                    /** @var TeePipeComponent $teePipeComponent */
                     $teePipeComponent = PipeComponentFactory::create(TeePipeComponent::class, $this->logger, $teeProcess, $command['exitCodes']);
                     $this->pipeConnector->extendPipe($teePipeComponent);
                     $this->components[$id][] = $teePipeComponent;
