@@ -13,6 +13,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 class Configuration implements ConfigurationInterface
 {
     protected $name = 'PipeBuilder';
+
     /**
      * {@inheritdoc}
      */
@@ -21,15 +22,23 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root($this->name);
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $rootNode
+            ->children()
+                ->arrayNode('Commands')
+                    ->prototype('array')
+                        ->children()
+                            ->scalarNode('name')->end()
+                            ->arrayNode('args')
+                                ->prototype('array')
+                                    ->children()
+                                        ->scalarNode('url')->end()
+                            ->arrayNode('options')
+                                ->prototype('array')
+                                    ->children()
+
+            ->end()
+        ;
 
         return $treeBuilder;
-    }
-
-    public function addCommand() {
-        
-
     }
 }
