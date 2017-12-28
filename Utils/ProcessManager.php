@@ -76,7 +76,7 @@ class ProcessManager implements LoggerAwareInterface
             } catch (\Exception $e) {
                 $this->killAllProcesses();
 
-                $this->logger->error(sprintf('Error: %s', $e->getMessage()));
+                $this->logger->error('Error: ' . $e->getMessage(), ['exception' => $e]);
 
                 throw $e;
             }
