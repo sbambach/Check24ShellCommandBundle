@@ -1,6 +1,6 @@
 <?php
 
-namespace Shopping\ShellCommandBundle\Utils\Command;
+namespace Check24\ShellCommandBundle\Utils\Command;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>

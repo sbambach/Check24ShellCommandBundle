@@ -1,20 +1,20 @@
 <?php
 
-namespace Shopping\ShellCommandBundle\Utils\Pipe;
+namespace Check24\ShellCommandBundle\Utils\Pipe;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Shell\Commands\CommandInterface;
 use Shell\Process;
-use Shopping\ShellCommandBundle\Utils\Command\ParameterInterface;
-use Shopping\ShellCommandBundle\Utils\Command\ParameterTrait;
-use Shopping\ShellCommandBundle\Utils\Pipe\Component\LinearPipeComponent;
-use Shopping\ShellCommandBundle\Utils\Pipe\Component\PipeComponentFactory;
-use Shopping\ShellCommandBundle\Utils\Pipe\Component\PipeComponentInterface;
-use Shopping\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponent;
-use Shopping\ShellCommandBundle\Utils\Pipe\Resource\File;
-use Shopping\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
-use Shopping\ShellCommandBundle\Utils\ProcessManager;
+use Check24\ShellCommandBundle\Utils\Command\ParameterInterface;
+use Check24\ShellCommandBundle\Utils\Command\ParameterTrait;
+use Check24\ShellCommandBundle\Utils\Pipe\Component\LinearPipeComponent;
+use Check24\ShellCommandBundle\Utils\Pipe\Component\PipeComponentFactory;
+use Check24\ShellCommandBundle\Utils\Pipe\Component\PipeComponentInterface;
+use Check24\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponent;
+use Check24\ShellCommandBundle\Utils\Pipe\Resource\File;
+use Check24\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
+use Check24\ShellCommandBundle\Utils\ProcessManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 

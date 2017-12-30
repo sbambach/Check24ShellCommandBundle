@@ -1,20 +1,20 @@
 <?php
 
-namespace Shopping\ShellCommandBundle\DependencyInjection;
+namespace Check24\ShellCommandBundle\DependencyInjection;
 
 use Shell\Commands\CommandInterface;
 use Shell\Process;
-use Shopping\ShellCommandBundle\Utils\Command\ParameterCommand;
-use Shopping\ShellCommandBundle\Utils\Pipe\Component\LinearPipeComponent;
-use Shopping\ShellCommandBundle\Utils\Pipe\Component\PipeComponentFactory;
-use Shopping\ShellCommandBundle\Utils\Pipe\Component\PipeComponentInterface;
-use Shopping\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponent;
-use Shopping\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponentFactory;
-use Shopping\ShellCommandBundle\Utils\Pipe\Pipe;
-use Shopping\ShellCommandBundle\Utils\Pipe\PipeConnector;
-use Shopping\ShellCommandBundle\Utils\Pipe\PipeFactory;
-use Shopping\ShellCommandBundle\Utils\Pipe\Resource\File;
-use Shopping\ShellCommandBundle\Utils\ProcessManager;
+use Check24\ShellCommandBundle\Utils\Command\ParameterCommand;
+use Check24\ShellCommandBundle\Utils\Pipe\Component\LinearPipeComponent;
+use Check24\ShellCommandBundle\Utils\Pipe\Component\PipeComponentFactory;
+use Check24\ShellCommandBundle\Utils\Pipe\Component\PipeComponentInterface;
+use Check24\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponent;
+use Check24\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponentFactory;
+use Check24\ShellCommandBundle\Utils\Pipe\Pipe;
+use Check24\ShellCommandBundle\Utils\Pipe\PipeConnector;
+use Check24\ShellCommandBundle\Utils\Pipe\PipeFactory;
+use Check24\ShellCommandBundle\Utils\Pipe\Resource\File;
+use Check24\ShellCommandBundle\Utils\ProcessManager;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Definition;

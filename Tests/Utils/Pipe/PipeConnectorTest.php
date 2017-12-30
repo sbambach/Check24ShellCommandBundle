@@ -1,9 +1,9 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Shopping\ShellCommandBundle\Utils\Pipe\Component\LinearPipeComponent;
-use Shopping\ShellCommandBundle\Utils\Pipe\PipeConnector;
-use Shopping\ShellCommandBundle\Utils\Pipe\Resource\Stream;
+use Check24\ShellCommandBundle\Utils\Pipe\Component\LinearPipeComponent;
+use Check24\ShellCommandBundle\Utils\Pipe\PipeConnector;
+use Check24\ShellCommandBundle\Utils\Pipe\Resource\Stream;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>

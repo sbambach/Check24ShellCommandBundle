@@ -1,6 +1,6 @@
 <?php
 
-namespace Shopping\ShellCommandBundle\Utils\Command;
+namespace Check24\ShellCommandBundle\Utils\Command;
 
 use Shell\Commands\Command;
 use Shell\Commands\CommandInterface;

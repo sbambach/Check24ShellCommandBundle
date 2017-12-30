@@ -1,6 +1,6 @@
 <?php
 
-namespace Shopping\ShellCommandBundle\Utils\Exception;
+namespace Check24\ShellCommandBundle\Utils\Exception;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>

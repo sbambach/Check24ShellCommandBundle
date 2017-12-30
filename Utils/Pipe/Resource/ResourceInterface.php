@@ -1,6 +1,6 @@
 <?php
 
-namespace Shopping\ShellCommandBundle\Utils\Pipe\Resource;
+namespace Check24\ShellCommandBundle\Utils\Pipe\Resource;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>

@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 use Shell\Commands\Command;
 use Shell\Output\EchoOutputHandler;
 use Shell\Process;
-use Shopping\ShellCommandBundle\Utils\ProcessManager;
+use Check24\ShellCommandBundle\Utils\ProcessManager;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>

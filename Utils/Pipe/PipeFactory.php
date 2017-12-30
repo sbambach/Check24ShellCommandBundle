@@ -1,14 +1,14 @@
 <?php
 
-namespace Shopping\ShellCommandBundle\Utils\Pipe;
+namespace Check24\ShellCommandBundle\Utils\Pipe;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Shopping\ShellCommandBundle\Utils\Command\ParameterInterface;
-use Shopping\ShellCommandBundle\Utils\Command\ParameterTrait;
-use Shopping\ShellCommandBundle\Utils\Pipe\Component\LinearPipeComponent;
-use Shopping\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponentFactory;
-use Shopping\ShellCommandBundle\Utils\ProcessManager;
+use Check24\ShellCommandBundle\Utils\Command\ParameterInterface;
+use Check24\ShellCommandBundle\Utils\Command\ParameterTrait;
+use Check24\ShellCommandBundle\Utils\Pipe\Component\LinearPipeComponent;
+use Check24\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponentFactory;
+use Check24\ShellCommandBundle\Utils\ProcessManager;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>

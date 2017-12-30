@@ -1,4 +1,4 @@
 services:
 #    shell_command.example:
-#        class: Shopping\ShellCommandBundle\Example
+#        class: Check24\ShellCommandBundle\Example
 #        arguments: ["@service_id", "plain_value", "%parameter%"]

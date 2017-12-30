@@ -1,9 +1,9 @@
 <?php
 
-namespace Shopping\ShellCommandBundle\Utils\Pipe\Component;
+namespace Check24\ShellCommandBundle\Utils\Pipe\Component;
 
 use Shell\Process;
-use Shopping\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
+use Check24\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>

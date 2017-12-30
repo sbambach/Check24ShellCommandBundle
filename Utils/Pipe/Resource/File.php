@@ -1,10 +1,10 @@
 <?php
 
-namespace Shopping\ShellCommandBundle\Utils\Pipe\Resource;
+namespace Check24\ShellCommandBundle\Utils\Pipe\Resource;
 
-use Shopping\ShellCommandBundle\Utils\Command\ParameterInterface;
-use Shopping\ShellCommandBundle\Utils\Command\ParameterTrait;
-use Shopping\ShellCommandBundle\Utils\Exception\IOException;
+use Check24\ShellCommandBundle\Utils\Command\ParameterInterface;
+use Check24\ShellCommandBundle\Utils\Command\ParameterTrait;
+use Check24\ShellCommandBundle\Utils\Exception\IOException;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>

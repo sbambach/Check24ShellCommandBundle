@@ -1,10 +1,10 @@
 <?php
 
-namespace Shopping\ShellCommandBundle\Utils\Pipe;
+namespace Check24\ShellCommandBundle\Utils\Pipe;
 
-use Shopping\ShellCommandBundle\Utils\Pipe\Component\PipeComponentInterface;
-use Shopping\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
-use Shopping\ShellCommandBundle\Utils\Pipe\Resource\Stream;
+use Check24\ShellCommandBundle\Utils\Pipe\Component\PipeComponentInterface;
+use Check24\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
+use Check24\ShellCommandBundle\Utils\Pipe\Resource\Stream;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>

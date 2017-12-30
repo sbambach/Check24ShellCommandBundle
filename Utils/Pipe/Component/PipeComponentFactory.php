@@ -1,6 +1,6 @@
 <?php
 
-namespace Shopping\ShellCommandBundle\Utils\Pipe\Component;
+namespace Check24\ShellCommandBundle\Utils\Pipe\Component;
 
 use Psr\Log\LoggerInterface;
 use Shell\Process;

@@ -1,12 +1,12 @@
 <?php
 
-namespace Shopping\ShellCommandBundle\Utils\Pipe\Component;
+namespace Check24\ShellCommandBundle\Utils\Pipe\Component;
 
 use Shell\Process;
-use Shopping\ShellCommandBundle\Utils\Command\ParameterInterface;
-use Shopping\ShellCommandBundle\Utils\Pipe\Resource\File;
-use Shopping\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
-use Shopping\ShellCommandBundle\Utils\Pipe\Resource\Stream;
+use Check24\ShellCommandBundle\Utils\Command\ParameterInterface;
+use Check24\ShellCommandBundle\Utils\Pipe\Resource\File;
+use Check24\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
+use Check24\ShellCommandBundle\Utils\Pipe\Resource\Stream;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>

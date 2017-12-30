@@ -1,8 +1,8 @@
 <?php
 
-namespace Shopping\ShellCommandBundle;
+namespace Check24\ShellCommandBundle;
 
-use Shopping\ShellCommandBundle\DependencyInjection\ShellCommandExtension;
+use Check24\ShellCommandBundle\DependencyInjection\ShellCommandExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
