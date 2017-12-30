@@ -93,7 +93,7 @@ class AppKernel extends Kernel
     {
         $bundles = array(
             // ...
-            new \Check24\ShellCommandBundle\ShellCommandBundle(),
+            new \Check24\ShellCommandBundle\Check24ShellCommandBundle(),
         );
 
         // ...
