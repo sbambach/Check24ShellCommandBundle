@@ -5,6 +5,7 @@ namespace Check24\ShellCommandBundle\Utils\Pipe\Resource;
 use Check24\ShellCommandBundle\Utils\Command\ParameterInterface;
 use Check24\ShellCommandBundle\Utils\Command\ParameterTrait;
 use Check24\ShellCommandBundle\Utils\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>
@@ -29,6 +30,7 @@ class File extends Stream implements ParameterInterface
         }
 
         if (!file_exists($this->resource)) {
+            (new Filesystem())->mkdir(dirname($this->resource));
             touch($this->resource);
         }
 
