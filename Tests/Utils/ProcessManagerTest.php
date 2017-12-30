@@ -1,7 +1,7 @@
 <?php
 
-use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Shell\Commands\Command;
 use Shell\Output\EchoOutputHandler;
 use Shell\Process;
@@ -42,6 +42,7 @@ class ProcessManagerTest extends TestCase
             ->method('readStdErr')
         ;
 
+        /** @var Process|PHPUnit_Framework_MockObject_MockObject $process */
         $process = $this->getMockBuilder(Process::class)
             ->setConstructorArgs([$command, null, $outputHandler])
             ->disableOriginalClone()
@@ -65,18 +66,13 @@ class ProcessManagerTest extends TestCase
             ->method('getOutputHandler')
             ->willReturn($outputHandler)
         ;
+        $this->sut->addProcess($process);
 
-
-        $logger = $this->createMock(Logger::class);
-
-        $logger
-            ->expects($this->never())
-            ->method('error')
-        ;
-
+        /** @var LoggerInterface|PHPUnit_Framework_MockObject_MockObject $logger */
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->never())->method('error');
         $this->sut->setLogger($logger);
 
-        $this->sut->addProcess($process);
         $results = $this->sut->waitAllProcesses();
 
         $expected = [
