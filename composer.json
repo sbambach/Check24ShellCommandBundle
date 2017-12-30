@@ -1,7 +1,7 @@
 {
     "name": "check24/shell-command-bundle",
     "type": "symfony-bundle",
-    "description": "Symfony bundle for shell command library",
+    "description": "Symfony bundle for the shell command library",
     "authors": [
         {
             "name": "Silvester Denk",

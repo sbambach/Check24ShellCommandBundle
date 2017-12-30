@@ -12,7 +12,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-    protected $name = 'shell_command';
+    protected $name = 'check24_shell_command';
 
     /**
      * {@inheritdoc}

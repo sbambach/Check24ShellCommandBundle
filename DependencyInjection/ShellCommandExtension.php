@@ -57,7 +57,7 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
             ],
         ];
 
-        $container->prependExtensionConfig('shell_command', $config);
+        $container->prependExtensionConfig('check24_shell_command', $config);
     }
 
     protected function createCommands(ContainerBuilder $container, array $config): array
@@ -80,7 +80,7 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
 
             $commandDefinition->addMethodCall('setName', [$commandName]);
 
-            $container->setDefinition(sprintf('shell_command.commands.%s', $commandName), $commandDefinition);
+            $container->setDefinition(sprintf('check24_shell_command.commands.%s', $commandName), $commandDefinition);
 
             $commandDefinitions[$commandName] = [
                 'definition' => $commandDefinition,
@@ -110,12 +110,12 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
                 [
                     $pipeParts,
                     $loggerReference,
-                    $container->getDefinition('shell_command.commands.tee')
+                    $container->getDefinition('check24_shell_command.commands.tee')
                 ]
             );
 
             $pipeDefinition->setFactory([PipeFactory::class, 'createPipe']);
-            $container->setDefinition(sprintf('shell_command.pipes.%s', $pipeName),$pipeDefinition);
+            $container->setDefinition(sprintf('check24_shell_command.pipes.%s', $pipeName),$pipeDefinition);
         }
     }
 }
