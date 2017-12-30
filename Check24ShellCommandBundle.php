@@ -2,7 +2,6 @@
 
 namespace Check24\ShellCommandBundle;
 
-use Check24\ShellCommandBundle\DependencyInjection\ShellCommandExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
@@ -12,8 +11,4 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class Check24ShellCommandBundle extends Bundle
 {
-    public function getContainerExtension()
-    {
-        return new ShellCommandExtension();
-    }
 }

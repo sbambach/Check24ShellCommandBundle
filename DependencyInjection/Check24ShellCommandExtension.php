@@ -22,7 +22,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  * @copyright 2017 CHECK24 Vergleichsportal Shopping GmbH <http://preisvergleich.check24.de>
  * @link      http://symfony.com/doc/current/cookbook/bundles/extension.html
  */
-class ShellCommandExtension extends Extension implements PrependExtensionInterface
+class Check24ShellCommandExtension extends Extension implements PrependExtensionInterface
 {
     /**
      * {@inheritdoc}
