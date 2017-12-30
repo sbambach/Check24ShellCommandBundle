@@ -3,7 +3,6 @@
 namespace Check24\ShellCommandBundle\Utils\Command;
 
 use Shell\Commands\Command;
-use Shell\Commands\CommandInterface;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>

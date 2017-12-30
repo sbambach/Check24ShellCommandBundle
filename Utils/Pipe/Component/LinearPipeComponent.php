@@ -2,13 +2,13 @@
 
 namespace Check24\ShellCommandBundle\Utils\Pipe\Component;
 
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
-use Shell\Process;
 use Check24\ShellCommandBundle\Utils\Command\ParameterInterface;
 use Check24\ShellCommandBundle\Utils\Exception\ShellCommandRuntimeError;
 use Check24\ShellCommandBundle\Utils\Pipe\Resource\File;
 use Check24\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Shell\Process;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>
@@ -32,7 +32,10 @@ class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterfac
 
     public function exec(): PipeComponentInterface
     {
-        $this->logger->debug('Running command : {command}', ['command' => $this->streamProcess->getCommand()->serialize()]);
+        $this->logger->debug(
+            'Running command : {command}',
+            ['command' => $this->streamProcess->getCommand()->serialize()]
+        );
 
         $this->runProcessAsync(
             $this->getStreamProcess(),

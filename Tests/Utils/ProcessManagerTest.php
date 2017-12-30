@@ -1,11 +1,11 @@
 <?php
 
+use Check24\ShellCommandBundle\Utils\ProcessManager;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Shell\Commands\Command;
 use Shell\Output\EchoOutputHandler;
 use Shell\Process;
-use Check24\ShellCommandBundle\Utils\ProcessManager;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>
@@ -48,7 +48,8 @@ class ProcessManagerTest extends TestCase
             ->disableOriginalClone()
             ->disableArgumentCloning()
             ->disallowMockingUnknownTypes()
-            ->getMock();
+            ->getMock()
+        ;
 
         $process
             ->expects($this->once())

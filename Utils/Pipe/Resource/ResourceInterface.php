@@ -15,7 +15,10 @@ interface ResourceInterface
     const ACCESS_TYPE_WRITE = 'w';
 
     public function openResourceHandle();
+
     public function setResource($resource);
+
     public function setAccessType(string $accessType): ResourceInterface;
+
     public function getAccessType(): string;
 }

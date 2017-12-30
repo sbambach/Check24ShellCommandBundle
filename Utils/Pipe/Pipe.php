@@ -2,10 +2,6 @@
 
 namespace Check24\ShellCommandBundle\Utils\Pipe;
 
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
-use Shell\Commands\CommandInterface;
-use Shell\Process;
 use Check24\ShellCommandBundle\Utils\Command\ParameterInterface;
 use Check24\ShellCommandBundle\Utils\Command\ParameterTrait;
 use Check24\ShellCommandBundle\Utils\Pipe\Component\LinearPipeComponent;
@@ -15,6 +11,10 @@ use Check24\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponent;
 use Check24\ShellCommandBundle\Utils\Pipe\Resource\File;
 use Check24\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
 use Check24\ShellCommandBundle\Utils\ProcessManager;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Shell\Commands\CommandInterface;
+use Shell\Process;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
@@ -66,7 +66,12 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
                 $process = $this->createProcess($command['definition']);
 
                 if ($index === 0) {
-                    $linearPipeComponent = PipeComponentFactory::create(LinearPipeComponent::class, $this->logger, $process, $command['exitCodes']);
+                    $linearPipeComponent = PipeComponentFactory::create(
+                        LinearPipeComponent::class,
+                        $this->logger,
+                        $process,
+                        $command['exitCodes']
+                    );
                     $this->createOutput($command, $linearPipeComponent);
                     $this->pipeConnector->extendPipe($linearPipeComponent);
                     $this->components[$id][] = $linearPipeComponent;
@@ -74,7 +79,12 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
                     $teeProcess = $this->createProcess($this->teeCommand);
 
                     /** @var TeePipeComponent $teePipeComponent */
-                    $teePipeComponent = PipeComponentFactory::create(TeePipeComponent::class, $this->logger, $teeProcess, $command['exitCodes']);
+                    $teePipeComponent = PipeComponentFactory::create(
+                        TeePipeComponent::class,
+                        $this->logger,
+                        $teeProcess,
+                        $command['exitCodes']
+                    );
                     $this->pipeConnector->extendPipe($teePipeComponent);
                     $this->components[$id][] = $teePipeComponent;
                 }

@@ -10,6 +10,7 @@ namespace Check24\ShellCommandBundle\Utils\Pipe\Resource;
 class Stream implements ResourceInterface
 {
     protected $resource;
+
     protected $accessType = self::ACCESS_TYPE_READ;
 
     /**

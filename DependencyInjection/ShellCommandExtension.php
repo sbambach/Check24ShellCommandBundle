@@ -2,26 +2,17 @@
 
 namespace Check24\ShellCommandBundle\DependencyInjection;
 
-use Shell\Commands\CommandInterface;
-use Shell\Process;
 use Check24\ShellCommandBundle\Utils\Command\ParameterCommand;
-use Check24\ShellCommandBundle\Utils\Pipe\Component\LinearPipeComponent;
-use Check24\ShellCommandBundle\Utils\Pipe\Component\PipeComponentFactory;
-use Check24\ShellCommandBundle\Utils\Pipe\Component\PipeComponentInterface;
-use Check24\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponent;
 use Check24\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponentFactory;
 use Check24\ShellCommandBundle\Utils\Pipe\Pipe;
-use Check24\ShellCommandBundle\Utils\Pipe\PipeConnector;
 use Check24\ShellCommandBundle\Utils\Pipe\PipeFactory;
-use Check24\ShellCommandBundle\Utils\Pipe\Resource\File;
-use Check24\ShellCommandBundle\Utils\ProcessManager;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
+use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\DependencyInjection\Loader;
 
 /**
  * This is the class that loads and manages your bundle configuration.
@@ -43,7 +34,7 @@ class ShellCommandExtension extends Extension implements PrependExtensionInterfa
 
         $this->updateContainerParameters($container, $config);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
     }
 

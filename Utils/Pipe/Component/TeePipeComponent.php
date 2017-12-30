@@ -2,11 +2,11 @@
 
 namespace Check24\ShellCommandBundle\Utils\Pipe\Component;
 
-use Shell\Process;
 use Check24\ShellCommandBundle\Utils\Command\ParameterInterface;
 use Check24\ShellCommandBundle\Utils\Pipe\Resource\File;
 use Check24\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
 use Check24\ShellCommandBundle\Utils\Pipe\Resource\Stream;
+use Shell\Process;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>

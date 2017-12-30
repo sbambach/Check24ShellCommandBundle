@@ -2,8 +2,8 @@
 
 namespace Check24\ShellCommandBundle\Utils\Pipe\Component;
 
-use Shell\Process;
 use Check24\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
+use Shell\Process;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>
@@ -13,12 +13,20 @@ use Check24\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
 interface PipeComponentInterface
 {
     public function exec(): PipeComponentInterface;
+
     public function passParameters(array $parameters);
+
     public function setInput(ResourceInterface $resource): PipeComponentInterface;
+
     public function setOutput(ResourceInterface $resource): PipeComponentInterface;
+
     public function getInput(): ?ResourceInterface;
+
     public function getOutput(): ?ResourceInterface;
+
     public function getStreamProcess(): ?Process;
+
     public function setStreamProcess(Process $process): PipeComponentInterface;
+
     public function setExpectedExitCodes(array $exitCodes): PipeComponentInterface;
 }

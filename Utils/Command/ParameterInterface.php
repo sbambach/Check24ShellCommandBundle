@@ -10,6 +10,8 @@ namespace Check24\ShellCommandBundle\Utils\Command;
 interface ParameterInterface
 {
     public function addParameter(string $key, string $value);
+
     public function setParameters(array $parameters);
+
     public function getParameters(): array;
 }

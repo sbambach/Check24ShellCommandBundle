@@ -2,13 +2,8 @@
 
 namespace Check24\ShellCommandBundle\Utils\Pipe;
 
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
-use Check24\ShellCommandBundle\Utils\Command\ParameterInterface;
-use Check24\ShellCommandBundle\Utils\Command\ParameterTrait;
-use Check24\ShellCommandBundle\Utils\Pipe\Component\LinearPipeComponent;
 use Check24\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponentFactory;
-use Check24\ShellCommandBundle\Utils\ProcessManager;
+use Psr\Log\LoggerInterface;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>
