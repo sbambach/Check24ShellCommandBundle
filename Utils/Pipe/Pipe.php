@@ -14,6 +14,7 @@ use Check24\ShellCommandBundle\Utils\ProcessManager;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Shell\Commands\CommandInterface;
+use Shell\Output\OutputHandler;
 use Shell\Process;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -125,7 +126,7 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
 
     protected function createProcess(CommandInterface $command): Process
     {
-        $process = new Process($command);
+        $process = new Process($command, null, new OutputHandler());
         $this->processManager->addProcess($process);
         return $process;
     }
