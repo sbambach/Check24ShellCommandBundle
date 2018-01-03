@@ -8,7 +8,9 @@ cache:
   directories:
     - $HOME/.composer/cache
 
-install: composer update --prefer-dist --no-interaction
+install:
+    - composer config --global github-protocols 'https'
+    - composer update --prefer-dist --no-interaction
 
 script:
     - ./vendor/bin/phpunit --coverage-text
