@@ -2,6 +2,7 @@
     "name": "check24/shell-command-bundle",
     "type": "symfony-bundle",
     "description": "Symfony bundle for the shell command library",
+    "license": "MIT",
     "authors": [
         {
             "name": "Silvester Denk",
