@@ -1,6 +1,8 @@
 Check24ShellCommandBundle
 =========================
 
+[![Build Status](https://travis-ci.org/CHECK24/Check24ShellCommandBundle.svg?branch=master)](https://travis-ci.org/CHECK24/Check24ShellCommandBundle)
+
 Symfony bundle for the [shell command library](https://github.com/sp4ceb4r/shell-command)
 
 Usage
