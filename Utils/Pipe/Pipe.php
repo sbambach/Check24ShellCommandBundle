@@ -2,8 +2,8 @@
 
 namespace Check24\ShellCommandBundle\Utils\Pipe;
 
-use Check24\ShellCommandBundle\Utils\Command\ParameterInterface;
-use Check24\ShellCommandBundle\Utils\Command\ParameterTrait;
+use Check24\ShellCommandBundle\Utils\ParameterInterface;
+use Check24\ShellCommandBundle\Utils\ParameterTrait;
 use Check24\ShellCommandBundle\Utils\Pipe\Component\LinearPipeComponent;
 use Check24\ShellCommandBundle\Utils\Pipe\Component\PipeComponentFactory;
 use Check24\ShellCommandBundle\Utils\Pipe\Component\PipeComponentInterface;

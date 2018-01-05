@@ -2,8 +2,8 @@
 
 namespace Check24\ShellCommandBundle\Utils\Pipe\Component;
 
-use Check24\ShellCommandBundle\Utils\Command\ParameterInterface;
 use Check24\ShellCommandBundle\Utils\Exception\ShellCommandRuntimeError;
+use Check24\ShellCommandBundle\Utils\ParameterInterface;
 use Check24\ShellCommandBundle\Utils\Pipe\Resource\File;
 use Check24\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
 use Psr\Log\LoggerAwareInterface;

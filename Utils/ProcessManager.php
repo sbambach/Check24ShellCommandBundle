@@ -2,7 +2,6 @@
 
 namespace Check24\ShellCommandBundle\Utils;
 
-use Check24\ShellCommandBundle\Utils\Command\ParameterCommand;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\NullLogger;

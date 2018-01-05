@@ -2,7 +2,7 @@
 
 namespace Check24\ShellCommandBundle\DependencyInjection;
 
-use Check24\ShellCommandBundle\Utils\Command\ParameterCommand;
+use Check24\ShellCommandBundle\Utils\ParameterCommand;
 use Check24\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponentFactory;
 use Check24\ShellCommandBundle\Utils\Pipe\Pipe;
 use Check24\ShellCommandBundle\Utils\Pipe\PipeFactory;

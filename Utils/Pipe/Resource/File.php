@@ -2,9 +2,9 @@
 
 namespace Check24\ShellCommandBundle\Utils\Pipe\Resource;
 
-use Check24\ShellCommandBundle\Utils\Command\ParameterInterface;
-use Check24\ShellCommandBundle\Utils\Command\ParameterTrait;
 use Check24\ShellCommandBundle\Utils\Exception\IOException;
+use Check24\ShellCommandBundle\Utils\ParameterInterface;
+use Check24\ShellCommandBundle\Utils\ParameterTrait;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**

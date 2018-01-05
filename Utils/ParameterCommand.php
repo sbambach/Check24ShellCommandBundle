@@ -1,6 +1,6 @@
 <?php
 
-namespace Check24\ShellCommandBundle\Utils\Command;
+namespace Check24\ShellCommandBundle\Utils;
 
 use Shell\Commands\Command;
 
