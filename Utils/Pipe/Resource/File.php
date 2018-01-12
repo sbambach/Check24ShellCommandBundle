@@ -41,4 +41,9 @@ class File extends Stream implements ParameterInterface
     {
         return $this->resource;
     }
+
+    public function __destruct()
+    {
+        file_exists($this->resource) && unlink($this->resource);
+    }
 }
