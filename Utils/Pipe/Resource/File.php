@@ -16,6 +16,8 @@ class File extends Stream implements ParameterInterface
 {
     use ParameterTrait;
 
+    protected $resourceIsFifo = false;
+
     public function openResourceHandle()
     {
         if (empty($this->resource)) {
@@ -23,6 +25,8 @@ class File extends Stream implements ParameterInterface
             if (!posix_mkfifo($this->resource, 0777)) {
                 throw new IOException();
             }
+
+            $this->resourceIsFifo = true;
         }
 
         if (!empty($this->parametersToParse)) {
@@ -40,5 +44,14 @@ class File extends Stream implements ParameterInterface
     public function getFilename(): string
     {
         return $this->resource;
+    }
+
+    public function __destruct()
+    {
+        if (!$this->resourceIsFifo) {
+            return;
+        }
+
+        file_exists($this->resource) && unlink($this->resource);
     }
 }
