@@ -30,6 +30,10 @@ class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterfac
     /** @var  ResourceInterface */
     protected $input;
 
+    /**
+     * @return PipeComponentInterface
+     * @throws \Shell\Exceptions\ProcessException
+     */
     public function exec(): PipeComponentInterface
     {
         $this->logger->debug(
@@ -111,6 +115,14 @@ class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterfac
         return $this;
     }
 
+    /**
+     * @param Process $process
+     * @param         $input
+     * @param         $output
+     *
+     * @return PipeComponentInterface
+     * @throws \Shell\Exceptions\ProcessException
+     */
     protected function runProcessAsync(Process $process, $input, $output): PipeComponentInterface
     {
         $process
@@ -120,9 +132,8 @@ class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterfac
             ->onError(
                 function (Process $process) {
                     throw new ShellCommandRuntimeError(sprintf(
-                        'CMD: %s, PID: %d, Exit-Code: %d, Error: %s',
+                        'CMD: %s, Exit-Code: %d, Error: %s',
                         $process->getCommand()->serialize(),
-                        $process->getPid(),
                         $process->getExitCode(),
                         $process->getOutputHandler()->readStdErr()
                     ));
