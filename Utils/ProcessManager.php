@@ -53,17 +53,19 @@ class ProcessManager implements LoggerAwareInterface
         $processes = $this->processes;
         krsort($processes);
 
+        $timeout = -1;
         $results = [];
         foreach ($processes as $process) {
             try {
-                $process->wait();
-
                 $command = $process->getCommand();
                 if ($command instanceof ParameterCommand) {
                     $name = $command->getName();
                 } else {
                     $name = $command->serialize();
                 }
+
+                $process->wait($timeout);
+                $timeout = 0;
 
                 $outputHandler = $process->getOutputHandler();
 
