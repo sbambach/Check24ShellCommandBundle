@@ -131,6 +131,10 @@ class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterfac
             ->setExpectedExitcodes($this->getExpectedExitCodes())
             ->onError(
                 function (Process $process) {
+                    if ($process->getExitCode() === -1) {
+                        return;
+                    }
+
                     throw new ShellCommandRuntimeError(sprintf(
                         'CMD: %s, Exit-Code: %d, Error: %s',
                         $process->getCommand()->serialize(),
