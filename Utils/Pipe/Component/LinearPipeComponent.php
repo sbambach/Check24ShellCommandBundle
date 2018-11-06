@@ -31,10 +31,12 @@ class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterfac
     protected $input;
 
     /**
+     * @param bool $lastComponentInPipe
+     *
      * @return PipeComponentInterface
      * @throws \Shell\Exceptions\ProcessException
      */
-    public function exec(): PipeComponentInterface
+    public function exec(bool $lastComponentInPipe): PipeComponentInterface
     {
         $this->logger->debug(
             'Running command : {command}',
@@ -44,7 +46,8 @@ class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterfac
         $this->runProcessAsync(
             $this->getStreamProcess(),
             $this->input->openResourceHandle(),
-            $this->output->openResourceHandle()
+            $this->output->openResourceHandle(),
+            !$lastComponentInPipe
         );
 
         if (!$this->output instanceof File) {
@@ -119,11 +122,12 @@ class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterfac
      * @param Process $process
      * @param         $input
      * @param         $output
+     * @param bool    $blocking
      *
      * @return PipeComponentInterface
      * @throws \Shell\Exceptions\ProcessException
      */
-    protected function runProcessAsync(Process $process, $input, $output): PipeComponentInterface
+    protected function runProcessAsync(Process $process, $input, $output, bool $blocking = Process::BLOCKING): PipeComponentInterface
     {
         $process
             ->setStdin($input)
@@ -143,7 +147,7 @@ class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterfac
                     ));
                 }
             )
-            ->runAsync(Process::BLOCKING)
+            ->runAsync($blocking)
         ;
 
         return $this;

@@ -12,7 +12,7 @@ use Shell\Process;
  */
 interface PipeComponentInterface
 {
-    public function exec(): PipeComponentInterface;
+    public function exec(bool $lastComponentInPipe): PipeComponentInterface;
 
     public function passParameters(array $parameters);
 

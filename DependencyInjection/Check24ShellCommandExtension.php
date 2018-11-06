@@ -26,6 +26,7 @@ class Check24ShellCommandExtension extends Extension implements PrependExtension
 {
     /**
      * {@inheritdoc}
+     * @throws \Exception
      */
     public function load(array $configs, ContainerBuilder $container)
     {

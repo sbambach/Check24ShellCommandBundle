@@ -23,7 +23,7 @@ class File extends Stream implements ParameterInterface
         if (empty($this->resource)) {
             $this->resource = sys_get_temp_dir() . '/' . uniqid('pipe_', true) . '.fifo';
             if (!posix_mkfifo($this->resource, 0777)) {
-                throw new IOException();
+                throw new IOException('cannot create fifo pipe');
             }
 
             $this->resourceIsFifo = true;

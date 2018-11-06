@@ -18,7 +18,7 @@ class TeePipeComponent extends LinearPipeComponent
     /** @var array */
     protected $fileProcesses;
 
-    public function exec(): PipeComponentInterface
+    public function exec(bool $lastComponentInPipe): PipeComponentInterface
     {
         $filePath = [];
         $inputs   = [];
@@ -34,7 +34,7 @@ class TeePipeComponent extends LinearPipeComponent
 
         $this->getStreamProcess()->getCommand()->addParameter('filePath', implode(' ', $filePath));
 
-        parent::exec();
+        parent::exec($lastComponentInPipe);
 
         foreach ($this->fileProcesses as $fileProcess) {
             $process = $fileProcess['process'];
@@ -53,7 +53,8 @@ class TeePipeComponent extends LinearPipeComponent
             $this->runProcessAsync(
                 $process,
                 $input->openResourceHandle(),
-                $output->openResourceHandle()
+                $output->openResourceHandle(),
+                !$lastComponentInPipe
             );
 
             if (!$output instanceof File) {
