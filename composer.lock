@@ -198,16 +198,16 @@
         },
         {
             "name": "sp4ceb4r/shell-command",
-            "version": "0.2.1",
+            "version": "0.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sp4ceb4r/shell-command.git",
-                "reference": "70da0224c6ee45e7a8b6e4054f76f8bb2865b4e8"
+                "reference": "24ed1cb293b1fbd881755cc560cf8757f52f7732"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sp4ceb4r/shell-command/zipball/70da0224c6ee45e7a8b6e4054f76f8bb2865b4e8",
-                "reference": "70da0224c6ee45e7a8b6e4054f76f8bb2865b4e8",
+                "url": "https://api.github.com/repos/sp4ceb4r/shell-command/zipball/24ed1cb293b1fbd881755cc560cf8757f52f7732",
+                "reference": "24ed1cb293b1fbd881755cc560cf8757f52f7732",
                 "shasum": ""
             },
             "require": {
@@ -238,7 +238,7 @@
                 "process",
                 "shell"
             ],
-            "time": "2018-11-02T14:08:30+00:00"
+            "time": "2018-11-09T15:17:54+00:00"
         },
         {
             "name": "symfony/cache",
