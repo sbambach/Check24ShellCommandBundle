@@ -106,8 +106,9 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
     {
         $pipeComponents = $this->pipeConnector->getConnectedPipeComponents();
         foreach ($pipeComponents as $id => $component) {
+            $component->setLastComponentInPipe(\count($pipeComponents)-1 === $id);
             $component->passParameters($this->getParameters());
-            $component->exec(count($pipeComponents)-1 === $id);
+            $component->exec();
         }
     }
 

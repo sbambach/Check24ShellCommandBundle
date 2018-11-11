@@ -30,13 +30,14 @@ class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterfac
     /** @var  ResourceInterface */
     protected $input;
 
+    /** @var bool */
+    protected $lastComponentInPipe = false;
+
     /**
-     * @param bool $lastComponentInPipe
-     *
      * @return PipeComponentInterface
      * @throws \Shell\Exceptions\ProcessException
      */
-    public function exec(bool $lastComponentInPipe): PipeComponentInterface
+    public function exec(): PipeComponentInterface
     {
         $this->logger->debug(
             'Running command : {command}',
@@ -46,8 +47,7 @@ class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterfac
         $this->runProcessAsync(
             $this->getStreamProcess(),
             $this->input->openResourceHandle(),
-            $this->output->openResourceHandle(),
-            !$lastComponentInPipe
+            $this->output->openResourceHandle()
         );
 
         if (!$this->output instanceof File) {
@@ -122,12 +122,11 @@ class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterfac
      * @param Process $process
      * @param         $input
      * @param         $output
-     * @param bool    $blocking
      *
      * @return PipeComponentInterface
      * @throws \Shell\Exceptions\ProcessException
      */
-    protected function runProcessAsync(Process $process, $input, $output, bool $blocking = Process::BLOCKING): PipeComponentInterface
+    protected function runProcessAsync(Process $process, $input, $output): PipeComponentInterface
     {
         $process
             ->setStdin($input)
@@ -147,8 +146,28 @@ class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterfac
                     ));
                 }
             )
-            ->runAsync($blocking)
+            ->runAsync(!$this->lastComponentInPipe)
         ;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLastComponentInPipe(): bool
+    {
+        return $this->lastComponentInPipe;
+    }
+
+    /**
+     * @param bool $lastComponentInPipe
+     *
+     * @return LinearPipeComponent
+     */
+    public function setLastComponentInPipe(bool $lastComponentInPipe): PipeComponentInterface
+    {
+        $this->lastComponentInPipe = $lastComponentInPipe;
 
         return $this;
     }

@@ -12,7 +12,7 @@ use Shell\Process;
  */
 interface PipeComponentInterface
 {
-    public function exec(bool $lastComponentInPipe): PipeComponentInterface;
+    public function exec(): PipeComponentInterface;
 
     public function passParameters(array $parameters);
 
@@ -29,4 +29,6 @@ interface PipeComponentInterface
     public function setStreamProcess(Process $process): PipeComponentInterface;
 
     public function setExpectedExitCodes(array $exitCodes): PipeComponentInterface;
+
+    public function setLastComponentInPipe(bool $lastComponentInPipe): PipeComponentInterface;
 }
