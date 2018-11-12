@@ -48,6 +48,10 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
     /** @var  PipeConnector */
     protected $pipeConnector;
 
+    /**
+     * @return array
+     * @throws \Exception
+     */
     public function exec(): array
     {
         $this->pipeConnector  = new PipeConnector();
@@ -100,7 +104,9 @@ class Pipe implements ParameterInterface, ContainerAwareInterface, LoggerAwareIn
 
     protected function execComponents(): void
     {
-        foreach ($this->pipeConnector->getConnectedPipeComponents() as $component) {
+        $pipeComponents = $this->pipeConnector->getConnectedPipeComponents();
+        foreach ($pipeComponents as $id => $component) {
+            $component->setLastComponentInPipe(\count($pipeComponents)-1 === $id);
             $component->passParameters($this->getParameters());
             $component->exec();
         }

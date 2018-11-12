@@ -30,6 +30,9 @@ class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterfac
     /** @var  ResourceInterface */
     protected $input;
 
+    /** @var bool */
+    protected $lastComponentInPipe = true;
+
     /**
      * @return PipeComponentInterface
      * @throws \Shell\Exceptions\ProcessException
@@ -143,8 +146,28 @@ class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterfac
                     ));
                 }
             )
-            ->runAsync(Process::BLOCKING)
+            ->runAsync(!$this->lastComponentInPipe)
         ;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLastComponentInPipe(): bool
+    {
+        return $this->lastComponentInPipe;
+    }
+
+    /**
+     * @param bool $lastComponentInPipe
+     *
+     * @return LinearPipeComponent
+     */
+    public function setLastComponentInPipe(bool $lastComponentInPipe): PipeComponentInterface
+    {
+        $this->lastComponentInPipe = $lastComponentInPipe;
 
         return $this;
     }

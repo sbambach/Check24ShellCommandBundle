@@ -37,7 +37,7 @@ class ProcessManager implements LoggerAwareInterface
     /**
      * @param Process|NULL $excludeProcess
      */
-    public function killAllProcesses(Process $excludeProcess = null)
+    public function killAllProcesses(Process $excludeProcess = null): void
     {
         foreach ($this->processes as $process) {
             if ($process === $excludeProcess) {
@@ -48,7 +48,11 @@ class ProcessManager implements LoggerAwareInterface
         }
     }
 
-    public function waitAllProcesses()
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    public function waitAllProcesses(): array
     {
         $processes = $this->processes;
         krsort($processes);

@@ -5,6 +5,7 @@ namespace Check24\ShellCommandBundle\Utils\Pipe;
 use Check24\ShellCommandBundle\Utils\Pipe\Component\PipeComponentInterface;
 use Check24\ShellCommandBundle\Utils\Pipe\Resource\ResourceInterface;
 use Check24\ShellCommandBundle\Utils\Pipe\Resource\Stream;
+use Shell\Process;
 
 /**
  * @author    Eugen Ganshorn <eugen.ganshorn@check24.de>
@@ -16,7 +17,7 @@ class PipeConnector
     /** @var  PipeComponentInterface[] $lastComponent */
     protected $connectedPipeComponents = [];
 
-    public function extendPipe(PipeComponentInterface $pipeComponent)
+    public function extendPipe(PipeComponentInterface $pipeComponent): void
     {
         $lastComponent = end($this->connectedPipeComponents);
 
@@ -24,9 +25,10 @@ class PipeConnector
             $pipeComponent->setInput(new Stream());
         } else if ($lastComponent->getOutput() instanceof ResourceInterface) {
             $pipeComponent->setInput($lastComponent->getOutput());
+            $lastComponent->getStreamProcess()->setReadStreamStatus(Process::STDOUT, false);
         }
 
-        if (empty($pipeComponent->getOutput())) {
+        if ($pipeComponent->getOutput() === null) {
             $pipeComponent->setOutput((new Stream())->setAccessType(ResourceInterface::ACCESS_TYPE_WRITE));
         }
 
