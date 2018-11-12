@@ -31,7 +31,7 @@ class LinearPipeComponent implements PipeComponentInterface, LoggerAwareInterfac
     protected $input;
 
     /** @var bool */
-    protected $lastComponentInPipe = false;
+    protected $lastComponentInPipe = true;
 
     /**
      * @return PipeComponentInterface
