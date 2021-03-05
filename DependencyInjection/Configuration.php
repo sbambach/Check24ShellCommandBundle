@@ -19,8 +19,13 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root($this->name);
+        if (method_exists(TreeBuilder::class, 'root')) {
+            $treeBuilder = new TreeBuilder();
+            $rootNode = $treeBuilder->root($this->name);
+        } else {
+            $treeBuilder = new TreeBuilder($this->name);
+            $rootNode = $treeBuilder->getRootNode();
+        }
 
         $rootNode
             ->children()
