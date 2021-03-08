@@ -2,7 +2,6 @@
 
 namespace Check24\ShellCommandBundle\Utils\Pipe;
 
-use Check24\ShellCommandBundle\Utils\Pipe\Component\TeePipeComponentFactory;
 use Psr\Log\LoggerInterface;
 
 /**
